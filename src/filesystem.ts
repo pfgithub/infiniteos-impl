@@ -161,6 +161,28 @@ export async function emptyTrash(): Promise<void> {
     await Promise.all(deletePromises);
 }
 
+export async function mkdirp(path: string): Promise<void> {
+    let dirPath = path;
+    if (!dirPath.endsWith('/')) {
+        dirPath = dirPath.substring(0, dirPath.lastIndexOf('/') + 1);
+    }
+    
+    const parts = dirPath.split('/').filter(p => p.length > 0);
+    let currentPath = '/';
+    for (const part of parts) {
+        currentPath += part + '/';
+        try {
+            await readFile(currentPath);
+        } catch (e) {
+            if (e instanceof Error && e.message.includes("File not found")) {
+                await writeFile(currentPath, {});
+            } else {
+                throw e; // rethrow other errors
+            }
+        }
+    }
+}
+
 export async function readDir(dirPath: string): Promise<{name: string, path: string, isDir: boolean}[]> {
     if (!dirPath.endsWith('/')) {
         dirPath += '/';

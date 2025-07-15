@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { todoImplement } from '../todo';
 import useWindowStore from '../store/windowStore';
 import { WINDOW_DEFS } from '../windows';
-import { readFile, writeFile } from '../filesystem';
+import { readFile, writeFile, mkdirp } from '../filesystem';
+import { gamefiles } from '../gamefiles';
 
 const games = [
   {
@@ -175,15 +176,27 @@ function GamesContent({ id }: { id: string }) {
         setGameStatuses(prev => new Map(prev).set(game.id, 'installing'));
     
         // Simulate install time
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
     
         try {
-          await writeFile(`/Games/${game.folderName}/installed.flag`, { installedOn: new Date().toISOString() });
+          const filesToInstall = gamefiles[game.folderName];
+          if (filesToInstall) {
+            for (const [path, data] of Object.entries(filesToInstall)) {
+                await mkdirp(path); // creates parent dirs
+                if (!path.endsWith('/')) {
+                    await writeFile(path, data);
+                }
+            }
+          }
+
+          const gameDir = `/Games/${game.folderName}/`;
+          await mkdirp(gameDir); // Ensure game directory exists even if no files
+
+          await writeFile(`${gameDir}installed.flag`, { installedOn: new Date().toISOString() });
           setGameStatuses(prev => new Map(prev).set(game.id, 'installed'));
         } catch (e) {
           console.error(`Failed to install ${game.title}`, e);
           setGameStatuses(prev => new Map(prev).set(game.id, 'uninstalled'));
-          todoImplement(`Installation for ${game.title} failed. This might be because the directory /Games/${game.folderName}/ does not exist. Implement directory creation or handle this gracefully.`);
         }
     };
 
