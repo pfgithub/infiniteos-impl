@@ -17,6 +17,7 @@ const initialFilesystem = {
     "/Users/Admin/Desktop/Recycle Bin.desktop": {},
     "/Users/Admin/Desktop/Settings.desktop": {},
     "/Users/Admin/Desktop/Games.desktop": {},
+    "/Users/Admin/Desktop/Clock.desktop": {},
     "/Users/Admin/Documents/": {},
     "/Users/Admin/Documents/Work/": {},
     "/Users/Admin/Documents/Work/Q3_Financial_Report.docx": {},

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DesktopIcon from './DesktopIcon';
-import { BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, SettingsIcon } from '../icons';
+import { BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, SettingsIcon, ClockIcon } from '../icons';
 import useWindowStore from '../store/windowStore';
 import { WINDOW_DEFS } from '../windows';
 import { readDir } from '../filesystem';
@@ -11,6 +11,7 @@ const desktopFileMap: Record<string, { icon: React.ReactElement, windowDef: (typ
     'Games.desktop': { icon: <GamesIcon />, windowDef: WINDOW_DEFS.GAMES },
     'Recycle Bin.desktop': { icon: <RecycleBinIcon />, windowDef: WINDOW_DEFS.RECYCLE_BIN },
     'Settings.desktop': { icon: <SettingsIcon />, windowDef: WINDOW_DEFS.SETTINGS },
+    'Clock.desktop': { icon: <ClockIcon />, windowDef: WINDOW_DEFS.CLOCK },
 };
 
 function Desktop() {

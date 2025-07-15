@@ -2,7 +2,7 @@ import React from 'react';
 
 import SettingsContent from './components/settings/SettingsContent';
 
-import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon } from './icons';
+import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon } from './icons';
 
 import GamesContent from './components/GamesContent';
 
@@ -11,6 +11,8 @@ import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMa
 import BrowserContent from './components/BrowserContent';
 
 import CyberRunnerMainMenu from './components/games/cyberrunner/CyberRunnerMainMenu';
+
+import ClockContent from './components/ClockContent';
 
 import { todoImplement } from './todo';
 
@@ -354,9 +356,9 @@ export const WINDOW_DEFS = {
 
       title: 'Clock',
 
-      icon: <SystemIcon className="h-6 w-6" />,
+      icon: <ClockIcon className="h-6 w-6" />,
 
-      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Clock" />,
+      component: ClockContent,
 
     },
 

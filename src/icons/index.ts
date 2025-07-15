@@ -1,5 +1,6 @@
 export { default as AppearanceIcon } from './AppearanceIcon';
 export { default as BrowserIcon } from './BrowserIcon';
+export { default as ClockIcon } from './ClockIcon';
 export { default as CloseIcon } from './CloseIcon';
 export { default as FileExplorerIcon } from './FileExplorerIcon';
 export { default as GamesIcon } from './GamesIcon';
