@@ -29,6 +29,14 @@ Use the following HTML template:
 
 Requested URL: `;
 
+const template = `<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="/tailwind.js"></script>
+    </head>`;
+
 function encodePathname(pathname: string) {
     let res = "_F_";
     for(const char of [...pathname]) {
@@ -61,7 +69,7 @@ export async function infiniteSiteFetch(req: Request): Promise<Response> {
     console.log(prompt);
 
     const response = await ai.models.generateContentStream({
-        model: "gemini-2.5-flash-lite-preview-06-17",
+        model: "gemini-2.5-pro",
         contents: prompt,
         config: {
             temperature: 1.5,
@@ -86,7 +94,8 @@ export async function infiniteSiteFetch(req: Request): Promise<Response> {
                 buffer += chunk.text;
 
                 if (!documentStarted) {
-                    const startIndex = buffer.indexOf("<!DOCTYPE html>");
+                    const doctype = "<!DOCTYPE html>";
+                    const startIndex = buffer.indexOf(doctype);
                     if (startIndex !== -1) {
                         // Discard any preamble before the doctype
                         buffer = buffer.substring(startIndex);
