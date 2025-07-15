@@ -3,6 +3,9 @@ import index from "./src/index.html";
 import { genViewerPrompt } from "prompt";
 import prompt from "./prompt/prompt.html";
 import { apply } from "apply";
+import { llmRoute } from "@/api/llm";
+
+// A lock to ensure only one LLM request is processed at a time.
 
 const server = serve({
   routes: {
@@ -29,28 +32,7 @@ const server = serve({
       }
       return new Response("ok", {headers: {'Content-Type': "text/plain; charset=utf-8"}});
     }},
-    "/api/llm": async (req) => {
-      const url = new URL(req.url);
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", {
-        method: "POST",
-        headers: {
-          'Content-Type': "application/json",
-          'X-goog-api-key': process.env.GEMINI_KEY ?? "",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: url.searchParams.get("prompt") ?? "No prompt",
-                }
-              ],
-            }
-          ],
-        }),
-      });
-      return new Response(response.body, {status: response.status, headers: {'Content-Type': "text/plain; charset=utf-8"}});
-    },
+    "/api/llm": llmRoute,
   },
 
   development: process.env.NODE_ENV !== "production" && {
