@@ -1,6 +1,7 @@
 import React from 'react';
 
 import SettingsContent from './components/settings/SettingsContent';
+import FeedbackContent from './components/FeedbackContent';
 
 import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon } from './icons';
 
@@ -180,7 +181,7 @@ export const WINDOW_DEFS = {
 
       icon: <InfoIcon className="h-6 w-6" />,
 
-      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Feedback" />,
+      component: FeedbackContent,
 
     },
 
