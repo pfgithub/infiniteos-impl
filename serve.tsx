@@ -57,6 +57,7 @@ const iserve = serve({
     "/tailwind.js": new Response(Bun.file("node_modules/@tailwindcss/browser/dist/index.global.js")),
   },
   port: 8388,
+  idleTimeout: 255,
 })
 
 console.log(`🚀 Server running at ${server.url} / ${iserve.url}`);
