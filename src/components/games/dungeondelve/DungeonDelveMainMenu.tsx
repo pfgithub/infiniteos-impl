@@ -102,7 +102,7 @@ const DungeonDelveMainMenu: React.FC<DungeonDelveMainMenuProps> = ({ id }) => {
 
   return (
     <div 
-      className="flex-grow flex flex-col items-center justify-center text-white bg-cover bg-center bg-black"
+      className="flex-grow flex flex-col items-center justify-center text-white bg-cover bg-center bg-black overflow-y-scroll"
       style={{ backgroundImage: backgroundUrl ? `url('${backgroundUrl}')` : 'none' }}
     >
       {renderContent()}

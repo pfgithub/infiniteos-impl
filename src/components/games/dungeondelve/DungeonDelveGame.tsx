@@ -174,7 +174,7 @@ Generate the JSON response for the player's current situation.
   );
 
   return (
-    <div className="bg-black/80 backdrop-blur-md p-6 rounded-lg shadow-2xl w-full max-w-4xl h-full flex flex-col font-['MedievalSharp'] text-yellow-50">
+    <div className="bg-black/80 backdrop-blur-md p-6 rounded-lg shadow-2xl w-full max-w-4xl flex flex-col font-['MedievalSharp'] text-yellow-50">
       <div className="flex justify-between items-start mb-4 border-b-2 border-yellow-400/30 pb-4">
         <div>
           <h2 className="text-3xl font-extrabold text-yellow-300">{character.name} the {character.characterClass}</h2>
@@ -193,7 +193,7 @@ Generate the JSON response for the player's current situation.
         </button>
       </div>
 
-      <div className="flex-grow overflow-y-auto pr-2" ref={historyContainerRef}>
+      <div className="flex-grow pr-2" ref={historyContainerRef}>
         <div className="mb-6 space-y-4">
           {historyForDisplay.map((text, index) => (
             <p key={index} className={`leading-relaxed whitespace-pre-wrap ${text.startsWith('>') ? 'text-yellow-300 italic' : 'text-lg'}`}>
