@@ -101,7 +101,7 @@ export function apply(prompt: string, output: string): void {
     // Commit with message `[P] ${prompt}`
     try {
         // Stage all changes (new, modified, deleted files). -A ensures deletions are included.
-        execSync("git add -A");
+        execSync("git add --all");
 
         // Check if staging produced any changes.
         // This is important because applying changes might result in no actual modifications
