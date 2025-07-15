@@ -2,16 +2,11 @@ import React from 'react';
 import SettingsContent from './components/settings/SettingsContent';
 import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon } from './icons';
 import GamesContent from './components/GamesContent';
+import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMainMenu';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex items-center justify-center text-center">
       <p>The <strong>{appName}</strong> application is not yet implemented.<br/> This is a placeholder window.</p>
-    </div>
-);
-
-const DungeonDelveGameContent: React.FC<{ id: string }> = () => (
-    <div className="flex-grow p-4 flex items-center justify-center text-center bg-black">
-        <p className="text-2xl text-green-400 font-mono animate-pulse">Launching Dungeon Delve...</p>
     </div>
 );
   
@@ -50,6 +45,6 @@ export const WINDOW_DEFS = {
       id: 'dungeondelve_game',
       title: 'Dungeon Delve',
       icon: <GamesIcon className="h-6 w-6" />,
-      component: DungeonDelveGameContent,
+      component: DungeonDelveMainMenu,
     },
 };
