@@ -21,7 +21,7 @@ const createMap = (): Tile[][] => {
     }
     for (let i = 0; i < MAP_HEIGHT; i++) {
         map[i][0] = 'tree';
-        map[i][MAP_WIDTH - 1][i] = 'tree';
+        map[i][MAP_WIDTH - 1] = 'tree';
     }
     map[5][5] = 'tree';
     map[5][6] = 'tree';
