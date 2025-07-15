@@ -1,40 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import DesktopIcon from './DesktopIcon';
 import { BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, SettingsIcon } from '../icons';
 import useWindowStore from '../store/windowStore';
 import { WINDOW_DEFS } from '../windows';
+import { readDir } from '../filesystem';
+
+const desktopFileMap: Record<string, { icon: React.ReactElement, windowDef: (typeof WINDOW_DEFS)[keyof typeof WINDOW_DEFS] }> = {
+    'Browser.desktop': { icon: <BrowserIcon />, windowDef: WINDOW_DEFS.BROWSER },
+    'File Explorer.desktop': { icon: <FileExplorerIcon />, windowDef: WINDOW_DEFS.FILE_EXPLORER },
+    'Games.desktop': { icon: <GamesIcon />, windowDef: WINDOW_DEFS.GAMES },
+    'Recycle Bin.desktop': { icon: <RecycleBinIcon />, windowDef: WINDOW_DEFS.RECYCLE_BIN },
+    'Settings.desktop': { icon: <SettingsIcon />, windowDef: WINDOW_DEFS.SETTINGS },
+};
 
 function Desktop() {
   const { openWindow } = useWindowStore();
+  const [icons, setIcons] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchDesktopIcons = async () => {
+      try {
+        const files = await readDir('/Users/Admin/Desktop/');
+        const desktopIcons = files
+          .filter(file => !file.isDir && desktopFileMap[file.name])
+          .map(file => {
+            const { icon, windowDef } = desktopFileMap[file.name];
+            return {
+              id: `desktop_icon_${windowDef.id}`,
+              label: windowDef.title,
+              icon,
+              onClick: () => openWindow(windowDef)
+            };
+          });
+        setIcons(desktopIcons);
+      } catch (error) {
+        console.error("Failed to load desktop icons:", error);
+      }
+    };
+    fetchDesktopIcons();
+  }, [openWindow]);
 
   return (
     <main className="flex-grow p-3">
       <div className="flex flex-col flex-wrap h-full content-start gap-1">
-        <DesktopIcon 
-          id="desktop_icon_browser" 
-          label="Browser" 
-          icon={<BrowserIcon />} 
-          onClick={() => openWindow(WINDOW_DEFS.BROWSER)} />
-        <DesktopIcon 
-          id="desktop_icon_file_explorer" 
-          label="File Explorer" 
-          icon={<FileExplorerIcon />}
-          onClick={() => openWindow(WINDOW_DEFS.FILE_EXPLORER)} />
-        <DesktopIcon 
-          id="desktop_icon_my_games" 
-          label="My Games" 
-          icon={<GamesIcon />} 
-          onClick={() => openWindow(WINDOW_DEFS.GAMES)} />
-        <DesktopIcon 
-          id="desktop_icon_recycle_bin" 
-          label="Recycle Bin" 
-          icon={<RecycleBinIcon />}
-          onClick={() => openWindow(WINDOW_DEFS.RECYCLE_BIN)} />
-        <DesktopIcon 
-          id="desktop_icon_settings" 
-          label="Settings" 
-          icon={<SettingsIcon />} 
-          onClick={() => openWindow(WINDOW_DEFS.SETTINGS)} />
+        {icons.map(iconProps => <DesktopIcon key={iconProps.id} {...iconProps} />)}
       </div>
     </main>
   );

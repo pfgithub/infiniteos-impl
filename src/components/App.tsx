@@ -1,15 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Desktop from './Desktop';
 import Taskbar from './Taskbar';
 import useWindowStore from '../store/windowStore';
 import Window from './Window';
+import { initialize, readFile } from '../filesystem';
 
 function App() {
   const { windows } = useWindowStore();
+  const [backgroundUrl, setBackgroundUrl] = useState('');
+  const [isFsReady, setIsFsReady] = useState(false);
+
+  const loadBackground = async () => {
+    try {
+      const settings = await readFile('/Users/Admin/settings.ini');
+      if (settings && settings.contents) {
+        const bgPathMatch = settings.contents.match(/desktop_background=(.*)/);
+        if (bgPathMatch && bgPathMatch[1]) {
+          const bgPath = bgPathMatch[1];
+          const bgFile = await readFile(bgPath);
+          if (bgFile && bgFile.url) {
+            setBackgroundUrl(bgFile.url);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load background:", error);
+    }
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      await initialize();
+      await loadBackground();
+      setIsFsReady(true);
+    };
+    init();
+
+    const handleSettingsChange = () => {
+      loadBackground();
+    };
+
+    window.addEventListener('settings-changed', handleSettingsChange);
+    return () => {
+      window.removeEventListener('settings-changed', handleSettingsChange);
+    };
+  }, []);
+
 
   const backgroundStyle = {
-    backgroundImage: "url('/filesystem/Users/Admin/Pictures/Wallpapers/galaxy.jpg')",
+    backgroundImage: backgroundUrl ? `url('${backgroundUrl}')` : 'none',
+    backgroundColor: '#000',
   };
+
+  if (!isFsReady) {
+    return <div className="h-screen w-screen bg-black flex items-center justify-center text-white">Initializing Filesystem...</div>;
+  }
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-cover bg-center" style={backgroundStyle}>

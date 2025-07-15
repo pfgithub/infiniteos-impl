@@ -1,20 +1,73 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { todoImplement } from '../../todo';
-
-const wallpapers = [
-  "/filesystem/Users/Admin/Pictures/Wallpapers/galaxy.jpg",
-  "/filesystem/Users/Admin/Pictures/Wallpapers/mountains.jpg",
-  "/filesystem/Users/Admin/Pictures/Wallpapers/beach.jpg",
-  "/filesystem/Users/Admin/Pictures/Wallpapers/forest.jpg",
-];
+import { readDir, readFile, writeFile } from '../../filesystem';
 
 const accentColors = [
   "bg-blue-500", "bg-red-500", "bg-green-500", "bg-yellow-500", "bg-purple-500", "bg-pink-500",
 ];
 
+interface Wallpaper {
+  path: string;
+  url: string;
+}
+
 function AppearanceSettings() {
-  const [activeWallpaper, setActiveWallpaper] = React.useState(wallpapers[0]);
+  const [wallpapers, setWallpapers] = useState<Wallpaper[]>([]);
+  const [activeWallpaperPath, setActiveWallpaperPath] = useState('');
   const [activeAccent, setActiveAccent] = React.useState(accentColors[0]);
+
+  useEffect(() => {
+    const loadWallpapers = async () => {
+        try {
+            const files = await readDir('/Users/Admin/Pictures/Wallpapers/');
+            const wallpaperPromises = files
+                .filter(f => !f.isDir && (f.name.endsWith('.jpg') || f.name.endsWith('.png')))
+                .map(async (file) => {
+                    const meta = await readFile(file.path);
+                    if (meta && meta.url) {
+                        return { path: file.path, url: meta.url };
+                    }
+                    return null;
+                });
+            const loadedWallpapers = (await Promise.all(wallpaperPromises)).filter(Boolean) as Wallpaper[];
+            setWallpapers(loadedWallpapers);
+        } catch (error) {
+            console.error("Failed to load wallpapers:", error);
+        }
+    };
+
+    const loadCurrentWallpaper = async () => {
+        try {
+            const settings = await readFile('/Users/Admin/settings.ini');
+            if (settings && settings.contents) {
+                const bgPathMatch = settings.contents.match(/desktop_background=(.*)/);
+                if (bgPathMatch && bgPathMatch[1]) {
+                    setActiveWallpaperPath(bgPathMatch[1]);
+                }
+            }
+        } catch (error) {
+            console.error("Failed to load current wallpaper setting:", error);
+        }
+    };
+
+    loadWallpapers();
+    loadCurrentWallpaper();
+  }, []);
+
+  const handleSetWallpaper = async (wallpaper: Wallpaper) => {
+      try {
+          const settings = await readFile('/Users/Admin/settings.ini');
+          const newContents = settings.contents.replace(/desktop_background=.*/, `desktop_background=${wallpaper.path}`);
+          await writeFile('/Users/Admin/settings.ini', { ...settings, contents: newContents });
+          setActiveWallpaperPath(wallpaper.path);
+          window.dispatchEvent(new CustomEvent('settings-changed'));
+      } catch(error) {
+          console.error("Failed to set wallpaper:", error);
+          todoImplement(`Failed to set wallpaper: ${error instanceof Error ? error.message : String(error)}`);
+      }
+  };
+
+  const activeWallpaper = wallpapers.find(w => w.path === activeWallpaperPath);
 
   return (
     <div className="flex-grow p-6 overflow-y-auto">
@@ -67,19 +120,16 @@ function AppearanceSettings() {
           <h3 className="text-lg font-semibold mb-3 border-b border-white/10 pb-2">Wallpaper</h3>
           <div className="bg-black/20 p-4 rounded-lg mt-3">
             <p className="mb-3">Current Wallpaper:</p>
-            <img src={activeWallpaper} alt="Current Wallpaper" className="rounded-lg mb-4 w-full h-48 object-cover"/>
+            {activeWallpaper && <img src={activeWallpaper.url} alt="Current Wallpaper" className="rounded-lg mb-4 w-full h-48 object-cover"/>}
             <p className="mb-3">Choose a new wallpaper:</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {wallpapers.map(wp => (
                 <img 
-                  key={wp} 
-                  src={wp} 
+                  key={wp.path} 
+                  src={wp.url} 
                   alt="Wallpaper option" 
-                  className={`rounded-md cursor-pointer h-24 w-full object-cover transition-all ${activeWallpaper === wp ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-500' : 'hover:opacity-80'}`}
-                  onClick={() => {
-                    setActiveWallpaper(wp);
-                    todoImplement(`The wallpaper "${wp.split('/').pop()}" was selected. Implement setting this as the desktop background.`);
-                  }}
+                  className={`rounded-md cursor-pointer h-24 w-full object-cover transition-all ${activeWallpaperPath === wp.path ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-500' : 'hover:opacity-80'}`}
+                  onClick={() => handleSetWallpaper(wp)}
                 />
               ))}
             </div>
