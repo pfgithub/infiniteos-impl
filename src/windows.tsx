@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import SettingsContent from './components/settings/SettingsContent';
@@ -13,19 +12,39 @@ import BrowserContent from './components/BrowserContent';
 
 import CyberRunnerMainMenu from './components/games/cyberrunner/CyberRunnerMainMenu';
 
+import { todoImplement } from './todo';
+
 
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
 
-    <div className="flex-grow p-4 flex items-center justify-center text-center">
+    <div className="flex-grow p-4 flex flex-col items-center justify-center text-center gap-4">
 
-      <p>The <strong>{appName}</strong> application is not yet implemented.<br/> This is a placeholder window.</p>
+      <div>
+
+        <p>The <strong>{appName}</strong> application is not yet implemented.</p>
+
+        <p>This is a placeholder window.</p>
+
+      </div>
+
+      <button
+
+        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+
+        onClick={() => todoImplement(`Implement the ${appName} application.`)}
+
+      >
+
+        Implement {appName}
+
+      </button>
 
     </div>
 
 );
 
-  
+
 
 export const WINDOW_DEFS = {
 
@@ -402,4 +421,3 @@ export const WINDOW_DEFS = {
     },
 
 };
-
