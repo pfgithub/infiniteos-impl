@@ -5,12 +5,14 @@ import useWindowStore from '../store/windowStore';
 import Window from './Window';
 import { initialize, readFile } from '../filesystem';
 import StartMenu from './StartMenu';
+import CalendarClockFlyout from './CalendarClockFlyout';
 
 function App() {
   const { windows } = useWindowStore();
   const [backgroundUrl, setBackgroundUrl] = useState('');
   const [isFsReady, setIsFsReady] = useState(false);
   const [isStartMenuOpen, setStartMenuOpen] = useState(false);
+  const [isCalendarClockOpen, setCalendarClockOpen] = useState(false);
 
   const loadBackground = async () => {
     try {
@@ -31,10 +33,25 @@ function App() {
   };
 
   const toggleStartMenu = () => {
-    setStartMenuOpen(prev => !prev);
+    const opening = !isStartMenuOpen;
+    setStartMenuOpen(opening);
+    if (opening) {
+      setCalendarClockOpen(false);
+    }
   };
   const closeStartMenu = () => {
     setStartMenuOpen(false);
+  };
+
+  const toggleCalendarClock = () => {
+    const opening = !isCalendarClockOpen;
+    setCalendarClockOpen(opening);
+    if (opening) {
+      setStartMenuOpen(false);
+    }
+  };
+  const closeCalendarClock = () => {
+    setCalendarClockOpen(false);
   };
 
   useEffect(() => {
@@ -57,19 +74,27 @@ function App() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
       if (isStartMenuOpen) {
         const startButton = document.getElementById('start_button');
         const startMenu = document.getElementById('start_menu');
-        if (startButton && startButton.contains(event.target as Node)) return;
-        if (startMenu && startMenu.contains(event.target as Node)) return;
+        if (startButton?.contains(target)) return;
+        if (startMenu?.contains(target)) return;
         closeStartMenu();
+      }
+      if (isCalendarClockOpen) {
+        const trayDateTime = document.getElementById('tray_datetime');
+        const flyout = document.getElementById('calendar_clock_flyout');
+        if (trayDateTime?.contains(target)) return;
+        if (flyout?.contains(target)) return;
+        closeCalendarClock();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isStartMenuOpen]);
+  }, [isStartMenuOpen, isCalendarClockOpen]);
 
 
   const backgroundStyle = {
@@ -91,7 +116,8 @@ function App() {
           ))}
         </div>
         <StartMenu isOpen={isStartMenuOpen} onClose={closeStartMenu} />
-        <Taskbar onStartClick={toggleStartMenu} />
+        <CalendarClockFlyout isOpen={isCalendarClockOpen} />
+        <Taskbar onStartClick={toggleStartMenu} onDateTimeClick={toggleCalendarClock} />
       </div>
     </div>
   );

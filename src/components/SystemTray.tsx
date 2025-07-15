@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { WifiIcon, VolumeIcon } from '../icons';
 import { todoImplement } from '../todo';
 
-function SystemTray() {
+function SystemTray({ onDateTimeClick }: { onDateTimeClick: () => void }) {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timerId = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timerId);
+  }, []);
+
   return (
     <div className="flex items-center gap-4 px-2">
       <div 
@@ -24,10 +31,10 @@ function SystemTray() {
       <div 
         id="tray_datetime" 
         className="text-sm font-sans text-right cursor-pointer"
-        onClick={() => todoImplement("The date and time in the system tray was clicked. Implement opening a calendar and clock flyout/panel.")}
+        onClick={onDateTimeClick}
       >
-        <div id="tray_time">10:40 PM</div>
-        <div id="tray_date">7/14/2025</div>
+        <div id="tray_time">{time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
+        <div id="tray_date">{time.toLocaleDateString([], { month: 'numeric', day: 'numeric', year: 'numeric' })}</div>
       </div>
     </div>
   );

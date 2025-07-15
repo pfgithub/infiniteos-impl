@@ -5,7 +5,7 @@ import { StartIcon } from '../icons';
 import useWindowStore from '../store/windowStore';
 import { WINDOW_DEFS } from '../windows';
 
-function Taskbar({ onStartClick }: { onStartClick: () => void }) {
+function Taskbar({ onStartClick, onDateTimeClick }: { onStartClick: () => void; onDateTimeClick: () => void }) {
   const { windows, openWindow, focusWindow, toggleMinimize } = useWindowStore();
 
   const getFocusedWindow = () => {
@@ -79,7 +79,7 @@ function Taskbar({ onStartClick }: { onStartClick: () => void }) {
           );
         })}
       </div>
-      <SystemTray />
+      <SystemTray onDateTimeClick={onDateTimeClick} />
     </footer>
   );
 }
