@@ -45,7 +45,7 @@ function Desktop() {
   }, [openWindow]);
 
   return (
-    <main className="flex-grow p-3">
+    <main className="h-full p-3 overflow-auto">
       <div className="flex flex-col flex-wrap h-full content-start gap-1">
         {icons.map(iconProps => <DesktopIcon key={iconProps.id} {...iconProps} />)}
       </div>

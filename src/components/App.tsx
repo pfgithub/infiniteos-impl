@@ -84,7 +84,7 @@ function App() {
   return (
     <div className="h-screen w-screen overflow-hidden bg-cover bg-center" style={backgroundStyle}>
       <div className="h-full w-full flex flex-col">
-        <div className="flex-grow relative">
+        <div className="flex-grow relative min-h-0">
           <Desktop />
           {windows.map((window) => (
             <Window key={window.id} window={window} />
