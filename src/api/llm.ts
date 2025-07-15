@@ -45,8 +45,6 @@ export async function llmRoute(req: Request): Promise<Response> {
       return new Response("LLM response has no body", { status: 500, headers: { 'Content-Type': "text/plain; charset=utf-8" } });
     }
 
-    // Create a TransformStream to process the SSE from Gemini,
-    // print chunks to the console, and forward the text content.
     const transformStream = new TransformStream({
       start() {
         this.buffer = '';
