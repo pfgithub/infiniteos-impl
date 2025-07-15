@@ -3,12 +3,18 @@ import useWindowStore from '../../../store/windowStore';
 import { todoImplement } from '../../../todo';
 import { readFile } from '../../../filesystem';
 import CharacterCreation from './CharacterCreation';
+import DungeonDelveGame from './DungeonDelveGame';
 
 interface DungeonDelveMainMenuProps {
   id: string; // window id
 }
 
-type Screen = 'main_menu' | 'character_creation';
+interface CharacterData {
+  name: string;
+  characterClass: string;
+}
+
+type Screen = 'main_menu' | 'character_creation' | 'in_game';
 
 const MainMenuButton = ({ children, onClick, id }: { children: React.ReactNode, onClick: () => void, id: string }) => (
   <button
@@ -24,6 +30,7 @@ const DungeonDelveMainMenu: React.FC<DungeonDelveMainMenuProps> = ({ id }) => {
   const { closeWindow } = useWindowStore();
   const [backgroundUrl, setBackgroundUrl] = useState('');
   const [screen, setScreen] = useState<Screen>('main_menu');
+  const [character, setCharacter] = useState<CharacterData | null>(null);
 
   useEffect(() => {
     const loadBg = async () => {
@@ -39,15 +46,32 @@ const DungeonDelveMainMenu: React.FC<DungeonDelveMainMenuProps> = ({ id }) => {
     loadBg();
   }, []);
 
+  const handleQuitGame = () => {
+    // Reset state and go back to main menu
+    setScreen('main_menu');
+    setCharacter(null);
+  };
+  
+  const handleCharacterCreated = (characterData: CharacterData) => {
+    setCharacter(characterData);
+    setScreen('in_game');
+  };
 
-  const handleQuit = () => {
+  const handleQuitToDesktop = () => {
     closeWindow(id);
   };
 
   const renderContent = () => {
     switch (screen) {
+      case 'in_game':
+        if (!character) {
+            // Should not happen, but as a fallback
+            setScreen('main_menu');
+            return null;
+        }
+        return <DungeonDelveGame character={character} onQuit={handleQuitGame} />;
       case 'character_creation':
-        return <CharacterCreation onBack={() => setScreen('main_menu')} />;
+        return <CharacterCreation onBack={() => setScreen('main_menu')} onCharacterCreated={handleCharacterCreated} />;
       case 'main_menu':
       default:
         return (
@@ -67,7 +91,7 @@ const DungeonDelveMainMenu: React.FC<DungeonDelveMainMenuProps> = ({ id }) => {
               <MainMenuButton id="dungeondelve_options" onClick={() => todoImplement('Implement "Options" for Dungeon Delve. This should show settings for audio, graphics, and controls.')}>
                 Options
               </MainMenuButton>
-              <MainMenuButton id="dungeondelve_quit" onClick={handleQuit}>
+              <MainMenuButton id="dungeondelve_quit" onClick={handleQuitToDesktop}>
                 Quit
               </MainMenuButton>
             </div>

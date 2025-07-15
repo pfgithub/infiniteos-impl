@@ -1,17 +1,17 @@
 import React from 'react';
-import { todoImplement } from '../../../todo';
 
 interface CharacterCreationProps {
   onBack: () => void;
+  onCharacterCreated: (character: { name: string, characterClass: string }) => void;
 }
 
-const CharacterCreation: React.FC<CharacterCreationProps> = ({ onBack }) => {
+const CharacterCreation: React.FC<CharacterCreationProps> = ({ onBack, onCharacterCreated }) => {
   const [name, setName] = React.useState('');
   const [characterClass, setCharacterClass] = React.useState('Warrior');
 
   const handleStart = () => {
     if (!name.trim()) return;
-    todoImplement(`Start Dungeon Delve game with character: ${name} (Class: ${characterClass})`);
+    onCharacterCreated({ name: name.trim(), characterClass });
   };
 
   return (
