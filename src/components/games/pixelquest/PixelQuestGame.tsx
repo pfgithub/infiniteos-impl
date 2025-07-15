@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { levels, Level, Entity, Enemy as EnemyType } from './levels';
-import { todoImplement } from '../../../todo';
 
 // --- GAME CONFIG ---
 const TILE_SIZE = 32; // in pixels
@@ -40,6 +39,8 @@ const Enemy = ({ entity }: { entity: EnemyType }) => (
                 backgroundColor: 'red',
                 border: '2px solid darkred',
                 boxShadow: '0 0 8px red',
+                transform: `rotate(${entity.id * 45}deg) scale(0.8)`, // make them look slightly different
+                borderRadius: '30%',
             }}
         />
         <div className="absolute -bottom-2 w-full h-1.5 bg-gray-600 border border-gray-800 rounded-full">
@@ -59,11 +60,10 @@ const NPC = ({ x, y }: { x: number, y: number }) => (
             top: y * TILE_SIZE,
             width: TILE_SIZE,
             height: TILE_SIZE,
-            backgroundColor: 'green',
-            border: '2px solid darkgreen',
-            boxShadow: '0 0 8px green',
         }}
-    />
+    >
+        <div className="w-full h-full bg-green-500 rounded-md border-2 border-green-300 shadow-[0_0_8px_green]" />
+    </div>
 );
 
 const GameGrid = ({ level }: { level: Level }) => {
@@ -158,18 +158,18 @@ const PixelQuestGame: React.FC<PixelQuestGameProps> = ({ onQuit }) => {
     const [playerStats, setPlayerStats] = useState({ hp: 30, maxHp: 30, attack: 5, defense: 2, level: 1, xp: 0, nextLevelXp: 50 });
     const [entities, setEntities] = useState<Entity[]>(level.entities);
     const [gameState, setGameState] = useState<'playing' | 'won' | 'gameOver'>('playing');
-    const [gameLog, setGameLog] = useState<string[]>(["Welcome to Pixel Quest RPG!"]);
+    const [gameLog, setGameLog] = useState<string[]>(["Welcome to Pixel Quest RPG! Use arrow keys or WASD to move."]);
 
     const gridDimensions = useMemo(() => ({
         width: level.map[0].length,
         height: level.map.length
     }), [level]);
-
-    const addToLog = (message: string) => {
-        setGameLog(prevLog => [message, ...prevLog.slice(0, 49)]);
-    };
     
-    const loadLevel = (levelIndex: number) => {
+    const addToLog = useCallback((message: string) => {
+        setGameLog(prevLog => [message, ...prevLog.slice(0, 49)]);
+    }, []);
+
+    const loadLevel = useCallback((levelIndex: number) => {
         if (levelIndex >= levels.length) {
             setGameState('won');
             return;
@@ -180,7 +180,7 @@ const PixelQuestGame: React.FC<PixelQuestGameProps> = ({ onQuit }) => {
         setPlayerPos(newLevel.playerStart);
         setEntities(newLevel.entities);
         setGameState('playing');
-    };
+    }, []);
 
     const restartGame = () => {
         const firstLevel = JSON.parse(JSON.stringify(levels[0]));
@@ -193,57 +193,9 @@ const PixelQuestGame: React.FC<PixelQuestGameProps> = ({ onQuit }) => {
         setGameLog(["Welcome back to Pixel Quest RPG!"]);
     };
 
-    const handleCombat = (enemyId: number) => {
-        const enemy = entities.find(e => e.id === enemyId) as EnemyType;
-        if (!enemy || enemy.hp <= 0) return;
-    
-        // Player attacks
-        const damageToEnemy = Math.max(1, playerStats.attack - enemy.defense);
-        const newEnemyHp = enemy.hp - damageToEnemy;
-        addToLog(`You hit the ${enemy.name} for ${damageToEnemy} damage.`);
-    
-        if (newEnemyHp <= 0) {
-            addToLog(`You defeated the ${enemy.name}! You gain ${enemy.xp} XP.`);
-            setEntities(currentEntities => currentEntities.filter(e => e.id !== enemyId));
-            
-            const newXp = playerStats.xp + enemy.xp;
-            if (newXp >= playerStats.nextLevelXp) {
-                const newPlayerStats = {
-                    ...playerStats,
-                    level: playerStats.level + 1,
-                    xp: newXp - playerStats.nextLevelXp,
-                    nextLevelXp: Math.floor(playerStats.nextLevelXp * 1.5),
-                    maxHp: playerStats.maxHp + 10,
-                    hp: playerStats.maxHp + 10,
-                    attack: playerStats.attack + 2,
-                    defense: playerStats.defense + 1,
-                };
-                setPlayerStats(newPlayerStats);
-                addToLog(`LEVEL UP! You are now level ${newPlayerStats.level}!`);
-            } else {
-                setPlayerStats(stats => ({ ...stats, xp: newXp }));
-            }
-            return;
-        }
-        
-        // Enemy is alive, update its HP and then it attacks
-        setEntities(currentEntities => currentEntities.map(e => e.id === enemyId ? { ...e, hp: newEnemyHp } as EnemyType : e));
-        
-        const damageToPlayer = Math.max(1, enemy.attack - playerStats.defense);
-        const newPlayerHp = playerStats.hp - damageToPlayer;
-        addToLog(`The ${enemy.name} hits you for ${damageToPlayer} damage.`);
-        
-        if (newPlayerHp <= 0) {
-            setPlayerStats(stats => ({ ...stats, hp: 0 }));
-            setGameState('gameOver');
-            addToLog("You have been defeated...");
-        } else {
-            setPlayerStats(stats => ({ ...stats, hp: newPlayerHp }));
-        }
-    };
-    
-    const movePlayer = useCallback((dx: number, dy: number) => {
+    const takeTurn = useCallback((dx: number, dy: number) => {
         if (gameState !== 'playing') return;
+
         const newX = playerPos.x + dx;
         const newY = playerPos.y + dy;
 
@@ -251,41 +203,133 @@ const PixelQuestGame: React.FC<PixelQuestGameProps> = ({ onQuit }) => {
             return;
         }
 
-        const targetEntity = entities.find(e => e.pos.x === newX && e.pos.y === newY);
+        let logs: string[] = [];
+        let newPlayerPos = { ...playerPos };
+        let newEntities = JSON.parse(JSON.stringify(entities));
+        let newPlayerStats = { ...playerStats };
+
+        // 1. Player Action
+        const targetEntity = newEntities.find(e => e.pos.x === newX && e.pos.y === newY);
         if (targetEntity) {
             if (targetEntity.type === 'enemy') {
-                handleCombat(targetEntity.id);
+                const enemy = targetEntity;
+                const damageToEnemy = Math.max(1, newPlayerStats.attack - enemy.defense);
+                enemy.hp -= damageToEnemy;
+                logs.push(`You hit the ${enemy.name} for ${damageToEnemy} damage.`);
+            
+                if (enemy.hp <= 0) {
+                    logs.push(`You defeated the ${enemy.name}! You gain ${enemy.xp} XP.`);
+                    newEntities = newEntities.filter(e => e.id !== enemy.id);
+                    
+                    const newXp = newPlayerStats.xp + enemy.xp;
+                    if (newXp >= newPlayerStats.nextLevelXp) {
+                        newPlayerStats.level += 1;
+                        newPlayerStats.xp = newXp - newPlayerStats.nextLevelXp;
+                        newPlayerStats.nextLevelXp = Math.floor(newPlayerStats.nextLevelXp * 1.5);
+                        newPlayerStats.maxHp += 10;
+                        newPlayerStats.hp = newPlayerStats.maxHp;
+                        newPlayerStats.attack += 2;
+                        newPlayerStats.defense += 1;
+                        logs.push(`LEVEL UP! You are now level ${newPlayerStats.level}!`);
+                    } else {
+                        newPlayerStats.xp = newXp;
+                    }
+                }
             } else if (targetEntity.type === 'npc') {
                 addToLog(`[${targetEntity.name}]: ${targetEntity.message}`);
+                return;
             }
-            return;
-        }
-        
-        if (level.map[newY][newX] === 'goal') {
+        } else if (level.map[newY][newX] === 'goal') {
             addToLog(`You found the exit to level ${currentLevelIndex + 1}!`);
             loadLevel(currentLevelIndex + 1);
             return;
+        } else {
+            newPlayerPos = { x: newX, y: newY };
+        }
+
+        // 2. Enemy Actions
+        let gameOver = false;
+        
+        const finalPositions = new Map<number, {x: number, y: number}>();
+        newEntities.forEach(e => finalPositions.set(e.id, {...e.pos}));
+        
+        for (const entity of newEntities) {
+            if (entity.type !== 'enemy' || entity.hp <= 0) continue;
+            
+            const distToPlayer = Math.abs(newPlayerPos.x - entity.pos.x) + Math.abs(newPlayerPos.y - entity.pos.y);
+            
+            if (distToPlayer === 1) { // Attack
+                const damageToPlayer = Math.max(1, entity.attack - newPlayerStats.defense);
+                newPlayerStats.hp -= damageToPlayer;
+                logs.push(`The ${entity.name} hits you for ${damageToPlayer} damage.`);
+                if (newPlayerStats.hp <= 0) {
+                    newPlayerStats.hp = 0;
+                    gameOver = true;
+                    logs.push("You have been defeated...");
+                    break;
+                }
+            } else { // Move
+                let bestMove = { x: entity.pos.x, y: entity.pos.y };
+                let minDistance = distToPlayer;
+
+                const moves = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+                for (let i = moves.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [moves[i], moves[j]] = [moves[j], moves[i]];
+                }
+
+                for (const [moveDx, moveDy] of moves) {
+                    const nextX = entity.pos.x + moveDx;
+                    const nextY = entity.pos.y + moveDy;
+
+                    if (nextX < 0 || nextX >= gridDimensions.width || nextY < 0 || nextY >= gridDimensions.height || level.map[nextY][nextX] === 'wall') continue;
+                    
+                    const isPlayerOccupied = newPlayerPos.x === nextX && newPlayerPos.y === nextY;
+                    if(isPlayerOccupied) continue;
+
+                    const isEntityOccupied = Array.from(finalPositions.entries()).some(([id, pos]) => id !== entity.id && pos.x === nextX && pos.y === nextY);
+                    if (isEntityOccupied) continue;
+
+                    const distance = Math.abs(newPlayerPos.x - nextX) + Math.abs(newPlayerPos.y - nextY);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        bestMove = { x: nextX, y: nextY };
+                    }
+                }
+                finalPositions.set(entity.id, bestMove);
+            }
         }
         
-        setPlayerPos({ x: newX, y: newY });
-        todoImplement("Make enemies move after the player moves.");
+        // 3. Apply all state changes
+        newEntities.forEach(e => {
+            const newPos = finalPositions.get(e.id);
+            if (newPos) e.pos = newPos;
+        });
+        
+        logs.forEach(log => addToLog(log));
+        setPlayerPos(newPlayerPos);
+        setPlayerStats(newPlayerStats);
+        setEntities(newEntities);
+        if (gameOver) {
+            setGameState('gameOver');
+        }
+    }, [gameState, playerPos, entities, playerStats, gridDimensions, level.map, currentLevelIndex, loadLevel, addToLog]);
 
-    }, [gameState, playerPos, gridDimensions.width, gridDimensions.height, level.map, entities, currentLevelIndex]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (gameState !== 'playing') return;
             e.preventDefault();
             switch (e.key) {
-                case 'ArrowUp': case 'w': movePlayer(0, -1); break;
-                case 'ArrowDown': case 's': movePlayer(0, 1); break;
-                case 'ArrowLeft': case 'a': movePlayer(-1, 0); break;
-                case 'ArrowRight': case 'd': movePlayer(1, 0); break;
+                case 'ArrowUp': case 'w': takeTurn(0, -1); break;
+                case 'ArrowDown': case 's': takeTurn(0, 1); break;
+                case 'ArrowLeft': case 'a': takeTurn(-1, 0); break;
+                case 'ArrowRight': case 'd': takeTurn(1, 0); break;
             }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [movePlayer, gameState]);
+    }, [takeTurn, gameState]);
 
     return (
         <div className="w-full h-full flex flex-col bg-gray-900 text-white select-none">
