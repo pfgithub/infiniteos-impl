@@ -1,7 +1,21 @@
 import React from 'react';
 import { todoImplement } from '../../todo';
+import { clearDatabase } from '../../filesystem';
 
 function SystemSettings() {
+  const handleClearData = async () => {
+    if (window.confirm("Are you sure you want to clear all data? This will reset the entire OS to its initial state and cannot be undone.")) {
+      try {
+        await clearDatabase();
+        alert("Data cleared. The application will now reload.");
+        window.location.reload();
+      } catch (error) {
+        console.error("Failed to clear database:", error);
+        alert(`Failed to clear data: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  };
+
   return (
     <div className="flex-grow p-6 overflow-y-auto">
       <h2 className="text-2xl font-bold mb-4">System</h2>
@@ -43,6 +57,23 @@ function SystemSettings() {
               id="settings_check_updates" 
               className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors w-full sm:w-auto"
               onClick={() => todoImplement("The 'Check for updates' button in System settings was clicked. Implement the logic to check a server for OS updates and guide the user through installation if updates are available.")}>Check for updates</button>
+          </div>
+        </div>
+
+        {/* Reset */}
+        <div>
+          <h3 className="text-lg font-semibold mb-3 border-b border-white/10 pb-2">Reset</h3>
+          <div className="bg-black/20 p-4 rounded-lg mt-3">
+            <p className="text-gray-400 mb-3">
+              This will delete all your files, applications, and settings, restoring the OS to its factory defaults. This action is irreversible.
+            </p>
+            <button
+              id="settings_clear_database"
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition-colors w-full sm:w-auto"
+              onClick={handleClearData}
+            >
+              Clear all data and reset
+            </button>
           </div>
         </div>
       </div>

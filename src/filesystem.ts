@@ -229,3 +229,32 @@ export async function readDir(dirPath: string): Promise<{name: string, path: str
         req.onerror = () => reject(req.error);
     });
 }
+
+export async function clearDatabase(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        if (db) {
+            db.close();
+            // We need to undefine db so that getDb will re-open it if needed (although we will reload).
+            (db as any) = undefined;
+        }
+
+        const deleteRequest = indexedDB.deleteDatabase(DB_NAME);
+
+        deleteRequest.onsuccess = () => {
+            console.log(`Database ${DB_NAME} deleted successfully.`);
+            resolve();
+        };
+
+        deleteRequest.onerror = (event) => {
+            const error = (event.target as IDBRequest).error;
+            console.error(`Error deleting database ${DB_NAME}:`, error);
+            reject(error);
+        };
+
+        deleteRequest.onblocked = (event) => {
+            const error = new Error("Database deletion is blocked. Please close all other tabs with this app open and try again.");
+            console.warn(`Database deletion blocked.`, event);
+            reject(error);
+        };
+    });
+}
