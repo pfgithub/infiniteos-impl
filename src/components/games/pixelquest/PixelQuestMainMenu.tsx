@@ -13,7 +13,7 @@ type Screen = 'main_menu' | 'in_game';
 const MainMenuButton = ({ children, onClick, id }: { children: React.ReactNode, onClick: () => void, id: string }) => (
   <button
     id={id}
-    className="w-full max-w-xs px-6 py-3 text-lg text-white bg-blue-800/70 border-2 border-blue-400/50 rounded-md shadow-[0_0_15px_rgba(96,165,250,0.4)] hover:bg-blue-700/70 hover:text-white hover:border-blue-300 transition-all duration-300 ease-in-out transform hover:scale-105"
+    className="w-full max-w-xs px-6 py-3 text-lg font-mono text-white bg-indigo-600 border-b-4 border-indigo-800 rounded-none shadow-lg hover:bg-indigo-500 active:border-b-2 active:mt-[2px] transition-all duration-100"
     onClick={onClick}
   >
     {children}
@@ -39,48 +39,47 @@ const PixelQuestMainMenu: React.FC<PixelQuestMainMenuProps> = ({ id }) => {
     loadBg();
   }, []);
 
+  if (screen === 'in_game') {
+    return <PixelQuestGame onQuit={() => setScreen('main_menu')} />;
+  }
+  
   const handleQuitToDesktop = () => {
     closeWindow(id);
   };
 
-  const renderContent = () => {
-    switch (screen) {
-      case 'in_game':
-        return <PixelQuestGame onQuit={() => setScreen('main_menu')} />;
-      case 'main_menu':
-      default:
-        return (
-          <div className="bg-black/60 backdrop-blur-sm p-8 rounded-lg shadow-2xl flex flex-col items-center">
-            <h1 className="text-6xl font-extrabold text-blue-300 mb-2" style={{ textShadow: '2px 2px 8px #60a5fa' }}>
-              Pixel Quest
-            </h1>
-            <p className="text-blue-100 mb-10 text-lg">A classic 2D RPG adventure.</p>
-            
-            <div className="flex flex-col gap-4">
-              <MainMenuButton id="pixelquest_new_game" onClick={() => setScreen('in_game')}>
-                New Game
-              </MainMenuButton>
-              <MainMenuButton id="pixelquest_load_game" onClick={() => todoImplement('Implement "Load Game" for Pixel Quest. This should show a list of saved games.')}>
-                Load Game
-              </MainMenuButton>
-              <MainMenuButton id="pixelquest_options" onClick={() => todoImplement('Implement "Options" for Pixel Quest. This should show settings for audio, graphics, etc.')}>
-                Options
-              </MainMenuButton>
-              <MainMenuButton id="pixelquest_quit" onClick={handleQuitToDesktop}>
-                Quit to Desktop
-              </MainMenuButton>
-            </div>
-          </div>
-        );
-    }
-  };
+  const menuContent = (
+    <div className="bg-black/50 backdrop-blur-sm p-8 rounded-lg shadow-2xl flex flex-col items-center">
+      <h1 className="text-7xl font-bold font-mono text-white mb-2" style={{ textShadow: '4px 4px 0px #2563eb' }}>
+        Pixel Quest
+      </h1>
+      <p className="text-gray-300 mb-10 text-xl font-mono">A classic 2D RPG adventure.</p>
+      
+      <div className="flex flex-col gap-4">
+        <MainMenuButton id="pixelquest_new_game" onClick={() => setScreen('in_game')}>
+          New Game
+        </MainMenuButton>
+        <MainMenuButton id="pixelquest_load_game" onClick={() => todoImplement('Implement "Load Game" for Pixel Quest. This should show a list of saved games.')}>
+          Load Game
+        </MainMenuButton>
+        <MainMenuButton id="pixelquest_options" onClick={() => todoImplement('Implement "Options" for Pixel Quest. This should show settings for audio, graphics, etc.')}>
+          Options
+        </MainMenuButton>
+        <MainMenuButton id="pixelquest_quit" onClick={handleQuitToDesktop}>
+          Quit to Desktop
+        </MainMenuButton>
+      </div>
+    </div>
+  );
 
   return (
-    <div 
-      className="flex-grow flex flex-col items-center justify-center text-white bg-cover bg-center bg-black"
-      style={{ backgroundImage: backgroundUrl ? `url('${backgroundUrl}')` : 'none' }}
-    >
-      {renderContent()}
+    <div className="flex-grow flex flex-col items-center justify-center text-white bg-black">
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: backgroundUrl ? `url('${backgroundUrl}')` : 'none', filter: 'blur(2px) brightness(0.7)' }}
+      />
+      <div className="relative flex-grow w-full flex items-center justify-center p-4">
+        {menuContent}
+      </div>
     </div>
   );
 };
