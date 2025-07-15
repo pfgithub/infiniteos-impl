@@ -22,7 +22,7 @@ sourceForm.addEventListener("submit", async e => {
     if(files.status !== 200) return alert("error " +files.status);
     const filesText = await files.text();
     const prompt = formData.get("prompt");
-    const total = `Your task is to update the app based on the user's prompt.\n\n<prompt>\n${prompt}\n</prompt>\n${filesText}`;
+    const total = `Your task is to update the app based on the user's prompt.\n\nWhen a prompt is long and complicated, implement the next screen the user will see and use the todoImplement function for things which can be implemented later.\n\n<prompt>\n${prompt}\n</prompt>\n${filesText}`;
     await navigator.clipboard.writeText(total);
     resultTextarea.value = "";
     resultFormDialog.showModal();
