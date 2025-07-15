@@ -3,6 +3,7 @@ import SettingsContent from './components/settings/SettingsContent';
 import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon } from './icons';
 import GamesContent from './components/GamesContent';
 import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMainMenu';
+import BrowserContent from './components/BrowserContent';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex items-center justify-center text-center">
@@ -21,7 +22,7 @@ export const WINDOW_DEFS = {
       id: 'browser',
       title: 'Browser',
       icon: <BrowserIcon className="h-6 w-6" />,
-      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Browser" />,
+      component: BrowserContent,
     },
     FILE_EXPLORER: {
       id: 'file_explorer',
