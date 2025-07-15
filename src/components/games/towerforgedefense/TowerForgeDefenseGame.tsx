@@ -16,10 +16,10 @@ const path = [
 ];
 
 const TOWER_TYPES = {
-    'Archer Tower': { cost: 100, color: '#c19a6b', name: 'Archer Tower' },
-    'Cannon Tower': { cost: 150, color: '#808080', name: 'Cannon Tower' },
-    'Mage Tower': { cost: 200, color: '#8a2be2', name: 'Mage Tower' },
-    'Slow Tower': { cost: 80, color: '#add8e6', name: 'Slow Tower' },
+    'Archer Tower': { cost: 100, color: '#c19a6b', name: 'Archer Tower', range: 3 * TILE_SIZE, damage: 10 },
+    'Cannon Tower': { cost: 150, color: '#808080', name: 'Cannon Tower', range: 2 * TILE_SIZE, damage: 25 },
+    'Mage Tower': { cost: 200, color: '#8a2be2', name: 'Mage Tower', range: 4 * TILE_SIZE, damage: 15 },
+    'Slow Tower': { cost: 80, color: '#add8e6', name: 'Slow Tower', range: 2.5 * TILE_SIZE, damage: 0 },
 };
 type TowerType = keyof typeof TOWER_TYPES;
 
@@ -27,6 +27,16 @@ interface Tower {
     x: number;
     y: number;
     type: TowerType;
+}
+
+interface Enemy {
+    id: number;
+    x: number;
+    y: number;
+    health: number;
+    maxHealth: number;
+    speed: number;
+    pathIndex: number;
 }
 
 type GameStatus = 'idle' | 'wave_in_progress' | 'game_over';
@@ -58,28 +68,53 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
     const [gold, setGold] = useState(250);
     const [wave, setWave] = useState(0);
     const [towers, setTowers] = useState<Tower[]>([]);
+    const [enemies, setEnemies] = useState<Enemy[]>([]);
     const [selectedTowerType, setSelectedTowerType] = useState<TowerType | null>(null);
     const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
     const [mousePos, setMousePos] = useState({ x: -1, y: -1 });
+    const spawnIntervalRef = useRef<number | null>(null);
+    const [gameOver, setGameOver] = useState(false);
 
     // Use a ref to hold the latest state for the game loop and event handlers
-    const stateRef = useRef({ gold, towers, selectedTowerType, mousePos });
-    stateRef.current = { gold, towers, selectedTowerType, mousePos };
+    const stateRef = useRef({ gold, towers, selectedTowerType, mousePos, enemies, health, wave, gameStatus, gameOver });
+    stateRef.current = { gold, towers, selectedTowerType, mousePos, enemies, health, wave, gameStatus, gameOver };
 
     const handleSelectTower = (type: TowerType) => {
         if (TOWER_TYPES[type].cost > gold) {
             console.log("Not enough gold");
             return;
         }
-        // Toggle selection
         setSelectedTowerType(current => current === type ? null : type);
     };
 
     const handleStartWave = () => {
         if (gameStatus === 'idle') {
             setGameStatus('wave_in_progress');
-            setWave(w => w + 1);
-            todoImplement(`Wave ${wave + 1} started. Implement spawning and moving enemies along the path. Enemies should damage player health if they reach the end.`);
+            const newWave = wave + 1;
+            setWave(newWave);
+            
+            const enemiesToSpawn = 10 + newWave * 2;
+            let enemiesSpawned = 0;
+            
+            const intervalId = window.setInterval(() => {
+                if (enemiesSpawned < enemiesToSpawn) {
+                    setEnemies(prev => [...prev, {
+                        id: Date.now() + Math.random(),
+                        x: path[0].x * TILE_SIZE + TILE_SIZE / 2,
+                        y: path[0].y * TILE_SIZE + TILE_SIZE / 2,
+                        health: 100 + newWave * 20,
+                        maxHealth: 100 + newWave * 20,
+                        speed: 1,
+                        pathIndex: 0,
+                    }]);
+                    enemiesSpawned++;
+                } else {
+                    clearInterval(intervalId);
+                    spawnIntervalRef.current = null;
+                }
+            }, 500);
+            spawnIntervalRef.current = intervalId;
+            todoImplement('Towers should shoot at enemies. This involves: 1. Towers detecting enemies in range. 2. A targeting system. 3. A shooting mechanism (e.g. projectiles). 4. Damaging enemies and updating their health. 5. Awarding gold on kill.');
         }
     };
 
@@ -137,12 +172,92 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
             context.globalAlpha = 1.0;
         };
 
+        const drawEnemies = (context: CanvasRenderingContext2D, currentEnemies: Enemy[]) => {
+            currentEnemies.forEach(enemy => {
+                context.fillStyle = '#8b0000'; // Dark red for enemies
+                context.beginPath();
+                context.arc(enemy.x, enemy.y, TILE_SIZE / 3, 0, 2 * Math.PI);
+                context.fill();
+
+                // Health bar
+                const healthBarWidth = TILE_SIZE * 0.8;
+                const healthBarHeight = 5;
+                const healthBarX = enemy.x - healthBarWidth / 2;
+                const healthBarY = enemy.y - TILE_SIZE / 2;
+                
+                context.fillStyle = '#333';
+                context.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+                const currentHealthWidth = healthBarWidth * (enemy.health / enemy.maxHealth);
+                context.fillStyle = 'green';
+                context.fillRect(healthBarX, healthBarY, currentHealthWidth, healthBarHeight);
+            });
+        };
+        
+        const updateEnemies = () => {
+            if (stateRef.current.gameOver) return;
+            setEnemies(currentEnemies => {
+                if (currentEnemies.length === 0) return [];
+                
+                let healthToLose = 0;
+                const stillAliveEnemies: Enemy[] = [];
+                
+                for (const enemy of currentEnemies) {
+                    const nextWaypointIndex = enemy.pathIndex + 1;
+                    if (nextWaypointIndex >= path.length) {
+                        healthToLose += 10;
+                        continue;
+                    }
+                    
+                    const targetWaypoint = path[nextWaypointIndex];
+                    const targetX = targetWaypoint.x * TILE_SIZE + TILE_SIZE / 2;
+                    const targetY = targetWaypoint.y * TILE_SIZE + TILE_SIZE / 2;
+                    
+                    const dx = targetX - enemy.x;
+                    const dy = targetY - enemy.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    const newEnemy = { ...enemy };
+                    if (distance < newEnemy.speed) {
+                        newEnemy.x = targetX;
+                        newEnemy.y = targetY;
+                        newEnemy.pathIndex = nextWaypointIndex;
+                    } else {
+                        newEnemy.x += (dx / distance) * newEnemy.speed;
+                        newEnemy.y += (dy / distance) * newEnemy.speed;
+                    }
+                    stillAliveEnemies.push(newEnemy);
+                }
+
+                if (healthToLose > 0) {
+                    setHealth(h => Math.max(0, h - healthToLose));
+                }
+                return stillAliveEnemies;
+            });
+        };
+
         const gameLoop = () => {
-            const { towers, selectedTowerType, mousePos } = stateRef.current;
+            updateEnemies();
+            
+            const { towers, selectedTowerType, mousePos, enemies: currentEnemies, gameOver: isGameOver, wave: currentWave } = stateRef.current;
+            
             ctx.clearRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
             drawMap(ctx);
             drawTowers(ctx, towers);
+            drawEnemies(ctx, currentEnemies);
             drawPlacementPreview(ctx, selectedTowerType, towers, mousePos);
+            
+            if (isGameOver) {
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
+                ctx.fillStyle = 'red';
+                ctx.font = '80px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('GAME OVER', MAP_WIDTH / 2, MAP_HEIGHT / 2);
+                ctx.font = '30px sans-serif';
+                ctx.fillText(`You reached wave ${currentWave}`, MAP_WIDTH / 2, MAP_HEIGHT / 2 + 50);
+            }
+
             animationFrameId = window.requestAnimationFrame(gameLoop);
         };
         gameLoop();
@@ -163,6 +278,7 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
         };
         
         const handleMouseClick = (e: MouseEvent) => {
+            if (stateRef.current.gameOver) return;
             const { selectedTowerType, gold, towers } = stateRef.current;
             if (!selectedTowerType) return;
             const rect = canvas.getBoundingClientRect();
@@ -201,6 +317,36 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
         };
     }, []);
 
+    useEffect(() => {
+        // Wave completion check
+        if (gameStatus === 'wave_in_progress' && enemies.length === 0 && spawnIntervalRef.current === null) {
+            setGameStatus('idle');
+            setGold(g => g + 100 + wave * 10); // End of wave gold bonus
+        }
+    }, [enemies, gameStatus, wave]);
+
+    useEffect(() => {
+        // Game over check
+        if (health <= 0 && !gameOver) {
+            setGameOver(true);
+            setGameStatus('game_over');
+            if (spawnIntervalRef.current) {
+                clearInterval(spawnIntervalRef.current);
+                spawnIntervalRef.current = null;
+            }
+        }
+    }, [health, gameOver]);
+    
+    // Cleanup interval on component unmount
+    useEffect(() => {
+        return () => {
+            if (spawnIntervalRef.current) {
+                clearInterval(spawnIntervalRef.current);
+            }
+        };
+    }, []);
+
+
     const TowerButton = ({ type }: { type: TowerType }) => {
         const { name, cost } = TOWER_TYPES[type];
         const isSelected = selectedTowerType === type;
@@ -208,10 +354,10 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
         return (
             <button
                 onClick={() => handleSelectTower(type)}
-                disabled={!canAfford && !isSelected}
+                disabled={(!canAfford && !isSelected) || gameOver}
                 className={`p-2 border border-yellow-700 bg-black/30 rounded-lg text-left w-full transition-all
                     ${isSelected ? 'bg-yellow-800 ring-2 ring-yellow-400' : 'hover:bg-yellow-800/50'}
-                    ${!canAfford && !isSelected ? 'opacity-50 cursor-not-allowed' : ''}
+                    ${(!canAfford && !isSelected) || gameOver ? 'opacity-50 cursor-not-allowed' : ''}
                 `}
             >
                 <p className="font-bold">{name}</p>
@@ -230,8 +376,8 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
                     <div>🌊 Wave: <span className="font-bold">{wave} / 20</span></div>
                 </div>
                 <div>
-                    <button onClick={handleStartWave} className="bg-green-600 hover:bg-green-700 px-4 py-1 rounded disabled:bg-gray-500 disabled:cursor-not-allowed" disabled={gameStatus === 'wave_in_progress' || selectedTowerType !== null}>
-                        {gameStatus === 'wave_in_progress' ? `Wave ${wave} in Progress` : 'Start Next Wave'}
+                    <button onClick={handleStartWave} className="bg-green-600 hover:bg-green-700 px-4 py-1 rounded disabled:bg-gray-500 disabled:cursor-not-allowed" disabled={gameStatus !== 'idle' || selectedTowerType !== null || gameOver}>
+                        {gameOver ? 'Game Over' : gameStatus === 'wave_in_progress' ? `Wave ${wave} in Progress` : `Start Wave ${wave + 1}`}
                     </button>
                     <button onClick={onBackToMenu} className="bg-gray-600 hover:bg-gray-700 px-4 py-1 rounded ml-2">Menu</button>
                 </div>
