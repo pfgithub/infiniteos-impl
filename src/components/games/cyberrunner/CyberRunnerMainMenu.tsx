@@ -1,11 +1,15 @@
+```typescript
 import React, { useState, useEffect } from 'react';
 import useWindowStore from '../../../store/windowStore';
 import { todoImplement } from '../../../todo';
 import { readFile } from '../../../filesystem';
+import CyberRunnerGame from './CyberRunnerGame';
 
 interface CyberRunnerMainMenuProps {
   id: string; // window id
 }
+
+type Screen = 'main_menu' | 'in_game';
 
 const MainMenuButton = ({ children, onClick, id }: { children: React.ReactNode, onClick: () => void, id: string }) => (
   <button
@@ -20,6 +24,7 @@ const MainMenuButton = ({ children, onClick, id }: { children: React.ReactNode, 
 const CyberRunnerMainMenu: React.FC<CyberRunnerMainMenuProps> = ({ id }) => {
   const { closeWindow } = useWindowStore();
   const [backgroundUrl, setBackgroundUrl] = useState('');
+  const [screen, setScreen] = useState<Screen>('main_menu');
 
   useEffect(() => {
     const loadBg = async () => {
@@ -40,29 +45,35 @@ const CyberRunnerMainMenu: React.FC<CyberRunnerMainMenuProps> = ({ id }) => {
   };
 
   const renderContent = () => {
-    return (
-      <div className="bg-black/50 backdrop-blur-sm p-8 rounded-lg shadow-2xl flex flex-col items-center">
-        <h1 className="text-6xl font-extrabold text-pink-500 mb-2" style={{ textShadow: '2px 2px 8px #f472b6' }}>
-          CyberRunner 2077
-        </h1>
-        <p className="text-cyan-200 mb-10 text-lg">The Future is Now.</p>
-        
-        <div className="flex flex-col gap-4">
-          <MainMenuButton id="cyberrunner_new_game" onClick={() => todoImplement('Implement "New Game" for CyberRunner. This should start a new game session.')}>
-            New Game
-          </MainMenuButton>
-          <MainMenuButton id="cyberrunner_load_game" onClick={() => todoImplement('Implement "Load Game" for CyberRunner. This should show a list of saved games.')}>
-            Load Game
-          </MainMenuButton>
-          <MainMenuButton id="cyberrunner_options" onClick={() => todoImplement('Implement "Options" for CyberRunner. This should show settings for audio, graphics, and controls.')}>
-            Options
-          </MainMenuButton>
-          <MainMenuButton id="cyberrunner_quit" onClick={handleQuit}>
-            Quit
-          </MainMenuButton>
-        </div>
-      </div>
-    );
+    switch (screen) {
+      case 'in_game':
+        return <CyberRunnerGame onQuit={() => setScreen('main_menu')} />;
+      case 'main_menu':
+      default:
+        return (
+          <div className="bg-black/50 backdrop-blur-sm p-8 rounded-lg shadow-2xl flex flex-col items-center">
+            <h1 className="text-6xl font-extrabold text-pink-500 mb-2" style={{ textShadow: '2px 2px 8px #f472b6' }}>
+              CyberRunner 2077
+            </h1>
+            <p className="text-cyan-200 mb-10 text-lg">The Future is Now.</p>
+            
+            <div className="flex flex-col gap-4">
+              <MainMenuButton id="cyberrunner_new_game" onClick={() => setScreen('in_game')}>
+                New Game
+              </MainMenuButton>
+              <MainMenuButton id="cyberrunner_load_game" onClick={() => todoImplement('Implement "Load Game" for CyberRunner. This should show a list of saved games.')}>
+                Load Game
+              </MainMenuButton>
+              <MainMenuButton id="cyberrunner_options" onClick={() => todoImplement('Implement "Options" for CyberRunner. This should show settings for audio, graphics, and controls.')}>
+                Options
+              </MainMenuButton>
+              <MainMenuButton id="cyberrunner_quit" onClick={handleQuit}>
+                Quit
+              </MainMenuButton>
+            </div>
+          </div>
+        );
+    }
   };
 
   return (
