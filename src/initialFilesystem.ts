@@ -83,6 +83,9 @@ export const initialFilesystem = {
     "/Games/IslandEscape/locations/win.jpg": { "url": "https://images.unsplash.com/photo-1509343256512-d77a5cb3791b?q=80&w=1470" },
     "/Games/MechWarriors/": {},
     "/Games/CitySkylines/": {},
+    "/Games/CitySkylines/main_menu_bg.jpg": {
+        "url": "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    },
     "/System/": {},
     "/System/SystemInfo.txt": {},
     "/System/config/": {},

@@ -11,6 +11,7 @@ import FileExplorerContent from './components/FileExplorerContent';
 import { todoImplement } from './todo';
 import RecycleBinContent from './components/RecycleBinContent';
 import IslandEscapeMainMenu from './components/games/islandescape/IslandEscapeMainMenu';
+import CitySkylinesMainMenu from './components/games/cityskylines/CitySkylinesMainMenu';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex flex-col items-center justify-center text-center gap-4">
@@ -75,6 +76,12 @@ export const WINDOW_DEFS = {
       title: 'Island Escape',
       icon: <GamesIcon className="h-6 w-6" />,
       component: IslandEscapeMainMenu,
+    },
+    CITY_SKYLINES: {
+      id: 'cityskylines_game',
+      title: 'City Skylines II',
+      icon: <GamesIcon className="h-6 w-6" />,
+      component: CitySkylinesMainMenu,
     },
     TEXT_EDITOR: {
       id: 'text_editor',

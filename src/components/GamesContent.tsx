@@ -62,6 +62,8 @@ const GameCard = ({ game, status, onInstall }: { game: Game, status: GameStatus,
       openWindow(WINDOW_DEFS.CYBER_RUNNER);
     } else if (game.id === 'islandescape') {
       openWindow(WINDOW_DEFS.ISLAND_ESCAPE);
+    } else if (game.id === 'cityskylines') {
+      openWindow(WINDOW_DEFS.CITY_SKYLINES);
     } else {
       todoImplement(`The 'Play' button for "${game.title}" was clicked. Implement launching the game.`);
     }
