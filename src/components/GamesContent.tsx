@@ -182,8 +182,7 @@ function GamesContent({ id }: { id: string }) {
           const filesToInstall = gamefiles[game.folderName];
           if (filesToInstall) {
             for (const [path, data] of Object.entries(filesToInstall)) {
-                const dirPath = path.substring(0, path.lastIndexOf('/'));
-                await mkdirp(dirPath); // creates parent dirs
+                await mkdirp(path); // creates parent dirs
                 if (!path.endsWith('/')) {
                     await writeFile(path, data);
                 }

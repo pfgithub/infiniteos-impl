@@ -1,7 +1,7 @@
 import React from 'react';
 import SettingsContent from './components/settings/SettingsContent';
 import FeedbackContent from './components/FeedbackContent';
-import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon, CalculatorIcon, ArcaneLegacyIcon, TowerForgeDefenseIcon, VideoIcon } from './icons';
+import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon, CalculatorIcon, ArcaneLegacyIcon, TowerForgeDefenseIcon } from './icons';
 import GamesContent from './components/GamesContent';
 import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMainMenu';
 import BrowserContent from './components/BrowserContent';
@@ -174,7 +174,7 @@ export const WINDOW_DEFS = {
     VIDEO_PLAYER: {
       id: 'video_player',
       title: 'Video Player',
-      icon: <VideoIcon className="h-6 w-6" />,
+      icon: <SystemIcon className="h-6 w-6" />,
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Video Player" />,
     },
     SPREADSHEET: {

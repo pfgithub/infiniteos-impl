@@ -3,8 +3,6 @@ import { create } from 'zustand';
 
 const DEFAULT_WIDTH = 900;
 const DEFAULT_HEIGHT = 640;
-const TASKBAR_HEIGHT = 48;
-
 
 export interface WindowInstance {
   id: string;
@@ -53,9 +51,9 @@ const useWindowStore = create<WindowState>((set) => ({
       } else {
         // Position new windows with a slight cascade
         const openWindows = state.windows.filter(w => !w.isMinimized).length;
-        const offset = (openWindows % 10) * 30; // Avoids going off-screen indefinitely
+        const offset = openWindows * 30;
         const { innerWidth, innerHeight } = typeof window !== 'undefined' ? window : { innerWidth: 1920, innerHeight: 1080 };
-        const taskbarHeight = TASKBAR_HEIGHT;
+        const taskbarHeight = 48;
 
         const newWindow: WindowInstance = {
           ...windowConfig,
@@ -64,8 +62,8 @@ const useWindowStore = create<WindowState>((set) => ({
           isMaximized: false,
           width: DEFAULT_WIDTH,
           height: DEFAULT_HEIGHT,
-          x: Math.max(0, (innerWidth - DEFAULT_WIDTH) / 2 + offset),
-          y: Math.max(0, (innerHeight - taskbarHeight - DEFAULT_HEIGHT) / 2 + offset),
+          x: (innerWidth - DEFAULT_WIDTH) / 2 + offset,
+          y: (innerHeight - taskbarHeight - DEFAULT_HEIGHT) / 2 + offset,
         };
         return {
           windows: [...state.windows, newWindow],
@@ -83,23 +81,21 @@ const useWindowStore = create<WindowState>((set) => ({
 
   focusWindow: (id) => {
     set((state) => {
-      const windowToFocus = state.windows.find(w => w.id === id);
-      if (!windowToFocus) return state;
+      const windowsSortedByZ = [...state.windows]
+        .filter(w => !w.isMinimized)
+        .sort((a,b) => b.zIndex - a.zIndex);
+      
+      const focusedWindow = windowsSortedByZ.length > 0 ? windowsSortedByZ[0] : null;
 
-      const maxZIndex = state.windows.reduce((max, w) => Math.max(w.zIndex, max), state.nextZIndex);
-
-      // If the window is already on top, do nothing.
-      if (windowToFocus.zIndex === maxZIndex && !windowToFocus.isMinimized) {
+      if (focusedWindow && focusedWindow.id === id) {
         return state;
       }
-      
-      const newZIndex = maxZIndex + 1;
 
       return {
         windows: state.windows.map((w) =>
-          w.id === id ? { ...w, zIndex: newZIndex, isMinimized: false } : w
+          w.id === id ? { ...w, zIndex: state.nextZIndex + 1, isMinimized: false } : w
         ),
-        nextZIndex: newZIndex,
+        nextZIndex: state.nextZIndex + 1,
       }
     });
   },

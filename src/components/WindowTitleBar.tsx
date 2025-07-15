@@ -3,7 +3,6 @@ import { MinimizeIcon, MaximizeIcon, CloseIcon } from '../icons';
 
 function WindowTitleBar({ icon, title, isMaximized, onClose, onMinimize, onMaximize, onDragMouseDown }) {
   const handleDoubleClick = (e: React.MouseEvent) => {
-    // Ensure we don't trigger this when clicking the buttons
     if ((e.target as HTMLElement).closest('button')) {
       return;
     }

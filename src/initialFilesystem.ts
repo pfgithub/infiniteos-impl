@@ -23,27 +23,22 @@ export const initialFilesystem = {
     "/Users/Admin/Pictures/": {},
     "/Users/Admin/Pictures/Wallpapers/": {},
     "/Users/Admin/Pictures/Wallpapers/default_wallpaper.jpg": {
-        "url": "https://images.unsplash.com/photo-1747985323857-5c1c16b2ac47?q=80&w=1450&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        "url": "https://images.unsplash.com/photo-1747985323857-5c1c16b2ac47?q=80&w=1450&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
     "/Users/Admin/Pictures/Wallpapers/snowy_mountain.jpg": {
-        "url": "https://images.unsplash.com/photo-1573671935871-77305106a2f2?q=80&w=1464&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        "url": "https://images.unsplash.com/photo-1573671935871-77305106a2f2?q=80&w=1464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
     "/Users/Admin/Pictures/Wallpapers/galaxy.jpg": {
-        "url": "https://images.unsplash.com/photo-1741282198587-65bf77e6075d?q=80&w=1091&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        "url": "https://images.unsplash.com/photo-1741282198587-65bf77e6075d?q=80&w=1091&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
     "/Users/Admin/Pictures/Wallpapers/hills.jpg": {
-        "url": "https://images.unsplash.com/photo-1746937807433-05748b80caf4?q=80&w=1674&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        "url": "https://images.unsplash.com/photo-1746937807433-05748b80caf4?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
     "/Users/Admin/Pictures/Wallpapers/dolomites.jpg": {
-        "url": "https://images.unsplash.com/photo-1745669754254-c30c98e5f8b1?q=80&w=1470&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        "url": "https://images.unsplash.com/photo-1745669754254-c30c98e5f8b1?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
-    "/Users/Admin/Pictures/Avatars/": {},
-    "/Users/Admin/Pictures/Avatars/admin_avatar.png": {
-        "url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500"
-    },
-    "/Users/Admin/Pictures/Avatars/guest_avatar.png": {
-        "url": "https://images.unsplash.com/photo-1549078642-b2c4b3ea59aa?w=500"
-    },
+    "/Users/Admin/Pictures/Wallpapers/sunset.jpg": {},
+    "/Users/Admin/Pictures/Wallpapers/abstract.png": {},
     "/Users/Admin/Pictures/Family/": {},
     "/Users/Admin/Pictures/Family/2024_birthday_party_01.jpg": {},
     "/Users/Admin/Pictures/Family/2024_holiday_gathering.png": {},
@@ -68,15 +63,6 @@ export const initialFilesystem = {
         "contents": "desktop_background=/Users/Admin/Pictures/Wallpapers/galaxy.jpg"
     },
     "/Games/": {},
-    "/Games/Starfall/cover.jpg": {"url": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-    "/Games/CyberRunner/cover.jpg": {"url": "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?q=80&w=1471&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-    "/Games/DungeonDelve/cover.jpg": {"url": "https://images.unsplash.com/photo-1598583625234-90793735a297?q=80&w=1470&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-    "/Games/IslandEscape/cover.jpg": {"url": "https://images.unsplash.com/photo-1543292718-c654f57a0a03?q=80&w=1470&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-    "/Games/MechWarriors/cover.jpg": {"url": "https://images.unsplash.com/photo-1681234479979-4a92965039d9?q=80&w=1470&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-    "/Games/CitySkylines/cover.jpg": {"url": "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=1544&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-    "/Games/PixelQuest/cover.jpg": {"url": "https://images.unsplash.com/photo-1593986429994-b2f56360c410?q=80&w=1587&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-    "/Games/ArcaneLegacy/cover.jpg": {"url": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1587&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-    "/Games/TowerForgeDefense/cover.jpg": {"url": "https://images.unsplash.com/photo-1599409353922-22c7a1025178?q=80&w=1587&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
     "/System/": {},
     "/System/SystemInfo.txt": {},
     "/System/config/": {},

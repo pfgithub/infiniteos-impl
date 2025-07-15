@@ -26,15 +26,10 @@ function Window({ window: w }: WindowProps) {
   const handleDragMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
 
-    // Prevent drag from starting on buttons
-    if ((e.target as HTMLElement).closest('button')) {
-      return;
-    }
-
     if (w.isMaximized) {
       // It's tricky to start dragging immediately after restore due to state update latency.
       // For now, restoring on drag is sufficient. User can then drag the restored window.
-      // A better implementation might wait for the state update before starting the drag.
+      toggleMaximize(w.id);
       return;
     }
 
@@ -52,12 +47,12 @@ function Window({ window: w }: WindowProps) {
     };
 
     const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
   };
 
   const handleResizeMouseDown = (e: React.MouseEvent<HTMLDivElement>, direction: string) => {
@@ -105,20 +100,20 @@ function Window({ window: w }: WindowProps) {
     };
 
     const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
   };
 
   const WindowContent = w.component;
 
-  const windowClasses = "absolute flex flex-col bg-gray-800/80 backdrop-blur-xl border border-white/20 text-white shadow-2xl transition-all duration-100";
+  const windowClasses = "absolute flex flex-col bg-gray-800/80 backdrop-blur-xl border border-white/20 text-white shadow-2xl";
   
   const style: React.CSSProperties = w.isMaximized 
-    ? { top: 0, left: 0, width: '100vw', height: 'calc(100vh - 48px)', borderRadius: 0, transform: 'none' }
+    ? { top: 0, left: 0, width: '100%', height: '100%', borderRadius: 0 }
     : {
         transform: `translate(${w.x}px, ${w.y}px)`,
         width: `${w.width}px`,
@@ -149,7 +144,7 @@ function Window({ window: w }: WindowProps) {
       {!w.isMaximized && resizeHandles.map(handle => (
         <div
           key={handle.dir}
-          data-resize-handle="true"
+          data-resize-handle={true}
           className={`absolute ${handle.className}`}
           style={{ cursor: handle.cursor }}
           onMouseDown={(e) => handleResizeMouseDown(e, handle.dir)}
