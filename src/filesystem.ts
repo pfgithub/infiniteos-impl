@@ -1,6 +1,7 @@
 const DB_NAME = 'CuOS-FS';
 const STORE_NAME = 'files';
 const DB_VERSION = 1;
+const TRASH_DIR = '/.trash/';
 
 interface FsEntry {
     path: string;
@@ -20,7 +21,6 @@ const initialFilesystem = {
     "/Users/Admin/Desktop/Clock.desktop": {},
     "/Users/Admin/Documents/": {},
     "/Users/Admin/Documents/Work/": {},
-    "/Users/Admin/Documents/Work/Q3_Financial_Report.docx": {},
     "/Users/Admin/Documents/Work/Project_Proposal.pdf": {},
     "/Users/Admin/Documents/Work/Meeting_Notes.txt": {},
     "/Users/Admin/Documents/Personal/": {},
@@ -124,7 +124,13 @@ const initialFilesystem = {
     "/Applications/PDF_Reader.app": {},
     "/Applications/CloudStorage.app": {},
     "/Applications/VPN.app": {},
-    "/Applications/SpaceAdventures.app": {}
+    "/Applications/SpaceAdventures.app": {},
+    "/.trash/": {},
+    "/.trash/1721052000000-Q3_Financial_Report.docx": {
+        "originalPath": "/Users/Admin/Documents/Work/Q3_Financial_Report.docx",
+        "deletedAt": "2025-07-15T14:00:00.000Z",
+        "data": { "contents": "This was the Q3 financial report. It has been deleted." }
+    }
 };
 
 let db: IDBDatabase;
@@ -204,6 +210,78 @@ export async function writeFile(path: string, data: any): Promise<void> {
         req.onsuccess = () => resolve();
         req.onerror = () => reject(req.error);
     });
+}
+
+export async function deleteFile(path: string): Promise<void> {
+    const db = await getDb();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.delete(path);
+    return new Promise<void>((resolve, reject) => {
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+export async function trashFile(path: string): Promise<void> {
+    if (path === TRASH_DIR || path.startsWith(TRASH_DIR)) {
+        throw new Error("Cannot trash items from the recycle bin.");
+    }
+    const fileData = await readFile(path);
+    const fileName = path.substring(path.lastIndexOf('/') + 1) || path;
+    const trashPath = `${TRASH_DIR}${Date.now()}-${fileName}`;
+    
+    const trashInfo = {
+        originalPath: path,
+        deletedAt: new Date().toISOString(),
+        data: fileData,
+    };
+
+    await writeFile(trashPath, trashInfo);
+    await deleteFile(path);
+}
+
+export async function getTrashItems(): Promise<{ path: string, name: string, originalPath: string, deletedAt: string }[]> {
+    const trashDirContents = await readDir(TRASH_DIR);
+    const items = await Promise.all(
+        trashDirContents.map(async (item) => {
+            if (item.isDir) return null;
+            try {
+                const trashInfo = await readFile(item.path);
+                if (trashInfo && trashInfo.originalPath && trashInfo.deletedAt) {
+                    return {
+                        path: item.path,
+                        name: item.name,
+                        originalPath: trashInfo.originalPath,
+                        deletedAt: trashInfo.deletedAt,
+                    };
+                }
+            } catch (e) {
+                console.error(`Could not read trash item metadata for ${item.path}`, e);
+            }
+            return null;
+        })
+    );
+    return items.filter(Boolean) as any;
+}
+
+export async function restoreTrashItem(trashPath: string): Promise<void> {
+    const trashInfo = await readFile(trashPath);
+    if (!trashInfo || !trashInfo.originalPath) {
+        throw new Error("Invalid trash item: missing original path metadata.");
+    }
+    await writeFile(trashInfo.originalPath, trashInfo.data);
+    await deleteFile(trashPath);
+}
+
+export async function deleteTrashItem(trashPath: string): Promise<void> {
+    await deleteFile(trashPath);
+}
+
+export async function emptyTrash(): Promise<void> {
+    const trashDirContents = await readDir(TRASH_DIR);
+    const deletePromises = trashDirContents.map(item => deleteFile(item.path));
+    await Promise.all(deletePromises);
 }
 
 export async function readDir(dirPath: string): Promise<{name: string, path: string, isDir: boolean}[]> {

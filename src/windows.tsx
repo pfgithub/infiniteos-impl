@@ -9,6 +9,7 @@ import CyberRunnerMainMenu from './components/games/cyberrunner/CyberRunnerMainM
 import ClockContent from './components/ClockContent';
 import FileExplorerContent from './components/FileExplorerContent';
 import { todoImplement } from './todo';
+import RecycleBinContent from './components/RecycleBinContent';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex flex-col items-center justify-center text-center gap-4">
@@ -54,7 +55,7 @@ export const WINDOW_DEFS = {
       id: 'recycle_bin',
       title: 'Recycle Bin',
       icon: <RecycleBinIcon className="h-6 w-6" />,
-      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Recycle Bin" />,
+      component: RecycleBinContent,
     },
     DUNGEON_DELVE: {
       id: 'dungeondelve_game',
