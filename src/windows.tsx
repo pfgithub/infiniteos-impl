@@ -4,6 +4,7 @@ import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon 
 import GamesContent from './components/GamesContent';
 import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMainMenu';
 import BrowserContent from './components/BrowserContent';
+import CyberRunnerMainMenu from './components/games/cyberrunner/CyberRunnerMainMenu';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex items-center justify-center text-center">
@@ -47,5 +48,11 @@ export const WINDOW_DEFS = {
       title: 'Dungeon Delve',
       icon: <GamesIcon className="h-6 w-6" />,
       component: DungeonDelveMainMenu,
+    },
+    CYBER_RUNNER: {
+      id: 'cyberrunner_game',
+      title: 'CyberRunner 2077',
+      icon: <GamesIcon className="h-6 w-6" />,
+      component: CyberRunnerMainMenu,
     },
 };

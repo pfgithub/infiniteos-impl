@@ -58,6 +58,8 @@ const GameCard = ({ game, status, onInstall }: { game: Game, status: GameStatus,
   const handlePlay = () => {
     if (game.id === 'dungeondelve') {
       openWindow(WINDOW_DEFS.DUNGEON_DELVE);
+    } else if (game.id === 'cyberrunner') {
+      openWindow(WINDOW_DEFS.CYBER_RUNNER);
     } else {
       todoImplement(`The 'Play' button for "${game.title}" was clicked. Implement launching the game.`);
     }
