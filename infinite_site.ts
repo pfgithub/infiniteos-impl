@@ -61,7 +61,7 @@ export async function infiniteSiteFetch(req: Request): Promise<Response> {
     console.log(prompt);
 
     const response = await ai.models.generateContentStream({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash-lite-preview-06-17",
         contents: prompt,
         config: {
             temperature: 1.5,
