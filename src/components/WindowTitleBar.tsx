@@ -2,7 +2,7 @@ import React from 'react';
 import { MinimizeIcon, MaximizeIcon, CloseIcon } from '../icons';
 import { todoImplement } from '../todo';
 
-function WindowTitleBar({ icon, title }) {
+function WindowTitleBar({ icon, title, onClose }) {
   return (
     <div
       id={`window_${title.toLowerCase()}_title_bar`}
@@ -19,7 +19,7 @@ function WindowTitleBar({ icon, title }) {
         <button className="p-2 rounded-md hover:bg-white/10" aria-label="Maximize" onClick={() => todoImplement(`The maximize button on the '${title}' window was clicked. Implement maximizing/restoring the window.`)}>
           <MaximizeIcon />
         </button>
-        <button className="p-2 rounded-md hover:bg-red-600" aria-label="Close" onClick={() => todoImplement(`The close button on the '${title}' window was clicked. Implement closing the window.`)}>
+        <button className="p-2 rounded-md hover:bg-red-600" aria-label="Close" onClick={onClose}>
           <CloseIcon />
         </button>
       </div>

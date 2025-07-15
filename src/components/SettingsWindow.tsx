@@ -7,7 +7,7 @@ import NetworkSettings from './settings/NetworkSettings';
 import UsersSettings from './settings/UsersSettings';
 import { SettingsIcon } from '../icons';
 
-function SettingsWindow() {
+function SettingsWindow({ onClose }) {
   const [activePage, setActivePage] = useState('System');
 
   const renderContent = () => {
@@ -29,7 +29,7 @@ function SettingsWindow() {
       id="window_settings"
       className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] max-w-[95vw] h-[640px] max-h-[85vh] flex flex-col bg-gray-800/80 backdrop-blur-xl rounded-lg border border-white/20 shadow-2xl text-white z-20"
     >
-      <WindowTitleBar title="Settings" icon={<SettingsIcon className="h-6 w-6" />} />
+      <WindowTitleBar title="Settings" icon={<SettingsIcon className="h-6 w-6" />} onClose={onClose} />
       <div className="flex flex-grow overflow-hidden">
         <SettingsSidebar activePage={activePage} onNavigate={setActivePage} />
         {renderContent()}
