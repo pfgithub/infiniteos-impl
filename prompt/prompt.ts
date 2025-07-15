@@ -2,7 +2,18 @@ const sourceForm = document.getElementById("source-form")! as HTMLFormElement;
 const resultForm = document.getElementById("result-form")! as HTMLFormElement;
 const resultFormDialog = document.getElementById("result-form-dialog") as HTMLDialogElement;
 const closeDialogButton = document.getElementById("close-dialog")!;
+const sourceTextarea = document.getElementById("prompt-textarea") as HTMLTextAreaElement;
 const resultTextarea = document.getElementById("result-textarea") as HTMLTextAreaElement;
+
+const hrefUrl = new URL(location.href);
+const searchParams = hrefUrl.searchParams;
+const prefill = searchParams.get("prefill");
+if (prefill) {
+    sourceTextarea.value = prefill;
+    searchParams.delete("prefill");
+    hrefUrl.search = searchParams.toString();
+    history.replaceState({}, "", hrefUrl);
+}
 
 sourceForm.addEventListener("submit", async e => {
     e.preventDefault();
