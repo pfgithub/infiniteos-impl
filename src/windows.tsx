@@ -2,7 +2,7 @@ import React from 'react';
 
 import SettingsContent from './components/settings/SettingsContent';
 
-import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon } from './icons';
+import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon } from './icons';
 
 import GamesContent from './components/GamesContent';
 
@@ -13,6 +13,8 @@ import BrowserContent from './components/BrowserContent';
 import CyberRunnerMainMenu from './components/games/cyberrunner/CyberRunnerMainMenu';
 
 import ClockContent from './components/ClockContent';
+
+import FileExplorerContent from './components/FileExplorerContent';
 
 import { todoImplement } from './todo';
 
@@ -82,7 +84,7 @@ export const WINDOW_DEFS = {
 
       icon: <FileExplorerIcon className="h-6 w-6" />,
 
-      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="File Explorer" />,
+      component: FileExplorerContent,
 
     },
 
@@ -140,7 +142,7 @@ export const WINDOW_DEFS = {
 
       title: 'Text Editor',
 
-      icon: <FileExplorerIcon className="h-6 w-6" />,
+      icon: <FileIcon className="h-6 w-6" />,
 
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Text Editor" />,
 
@@ -284,7 +286,7 @@ export const WINDOW_DEFS = {
 
       title: 'Spreadsheet',
 
-      icon: <FileExplorerIcon className="h-6 w-6" />,
+      icon: <FileIcon className="h-6 w-6" />,
 
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Spreadsheet" />,
 
@@ -296,7 +298,7 @@ export const WINDOW_DEFS = {
 
       title: 'Presentation',
 
-      icon: <FileExplorerIcon className="h-6 w-6" />,
+      icon: <FileIcon className="h-6 w-6" />,
 
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Presentation" />,
 
@@ -308,7 +310,7 @@ export const WINDOW_DEFS = {
 
       title: 'Word Processor',
 
-      icon: <FileExplorerIcon className="h-6 w-6" />,
+      icon: <FileIcon className="h-6 w-6" />,
 
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Word Processor" />,
 
@@ -332,7 +334,7 @@ export const WINDOW_DEFS = {
 
       title: 'Notes',
 
-      icon: <FileExplorerIcon className="h-6 w-6" />,
+      icon: <FileIcon className="h-6 w-6" />,
 
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Notes" />,
 
@@ -380,7 +382,7 @@ export const WINDOW_DEFS = {
 
       title: 'PDF Reader',
 
-      icon: <FileExplorerIcon className="h-6 w-6" />,
+      icon: <FileIcon className="h-6 w-6" />,
 
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="PDF Reader" />,
 
