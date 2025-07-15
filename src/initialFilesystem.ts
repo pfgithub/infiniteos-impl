@@ -11,6 +11,7 @@ export const initialFilesystem = {
     "/Users/Admin/Desktop/Clock.desktop": {},
     "/Users/Admin/Desktop/Calculator.desktop": {},
     "/Users/Admin/Desktop/Arcane Legacy.desktop": {},
+    "/Users/Admin/Desktop/TowerForge Defense.desktop": {},
     "/Users/Admin/Documents/": {},
     "/Users/Admin/Documents/Work/": {},
     "/Users/Admin/Documents/Work/Project_Proposal.pdf": {},
@@ -102,6 +103,13 @@ export const initialFilesystem = {
     "/Games/ArcaneLegacy/main_menu_bg.jpg": {
         "url": "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
+    "/Games/TowerForgeDefense/": {},
+    "/Games/TowerForgeDefense/cover.jpg": {
+        "url": "https://images.unsplash.com/photo-1599409353922-22c7a1025178?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    },
+    "/Games/TowerForgeDefense/main_menu_bg.jpg": {
+        "url": "https://images.unsplash.com/photo-1533139143976-3e7232295552?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    },
     "/System/": {},
     "/System/SystemInfo.txt": {},
     "/System/config/": {},
@@ -149,6 +157,7 @@ export const initialFilesystem = {
     "/Applications/CloudStorage.app": {},
     "/Applications/VPN.app": {},
     "/Applications/ArcaneLegacy.app": {},
+    "/Applications/TowerForgeDefense.app": {},
     "/Applications/SpaceAdventures.app": {},
     "/.trash/": {},
     "/.trash/1721052000000-Q3_Financial_Report.docx": {

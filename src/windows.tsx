@@ -1,7 +1,7 @@
 import React from 'react';
 import SettingsContent from './components/settings/SettingsContent';
 import FeedbackContent from './components/FeedbackContent';
-import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon, CalculatorIcon, ArcaneLegacyIcon } from './icons';
+import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon, CalculatorIcon, ArcaneLegacyIcon, TowerForgeDefenseIcon } from './icons';
 import GamesContent from './components/GamesContent';
 import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMainMenu';
 import BrowserContent from './components/BrowserContent';
@@ -15,6 +15,7 @@ import CitySkylinesMainMenu from './components/games/cityskylines/CitySkylinesMa
 import CalculatorContent from './components/CalculatorContent';
 import PixelQuestMainMenu from './components/games/pixelquest/PixelQuestMainMenu';
 import ArcaneLegacyMainMenu from './components/games/arcanelegacy/ArcaneLegacyMainMenu';
+import TowerForgeDefenseMainMenu from './components/games/towerforgedefense/TowerForgeDefenseMainMenu';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex flex-col items-center justify-center text-center gap-4">
@@ -97,6 +98,12 @@ export const WINDOW_DEFS = {
       title: 'Arcane Legacy',
       icon: <ArcaneLegacyIcon className="h-6 w-6" />,
       component: ArcaneLegacyMainMenu,
+    },
+    TOWER_FORGE_DEFENSE: {
+        id: 'towerforgedefense_game',
+        title: 'TowerForge Defense',
+        icon: <TowerForgeDefenseIcon className="h-6 w-6" />,
+        component: TowerForgeDefenseMainMenu,
     },
     TEXT_EDITOR: {
       id: 'text_editor',

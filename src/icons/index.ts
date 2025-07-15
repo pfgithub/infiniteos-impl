@@ -19,6 +19,7 @@ export { default as RecycleBinIcon } from './RecycleBinIcon';
 export { default as SettingsIcon } from './SettingsIcon';
 export { default as StartIcon } from './StartIcon';
 export { default as SystemIcon } from './SystemIcon';
+export { default as TowerForgeDefenseIcon } from './TowerForgeDefenseIcon';
 export { default as UsersIcon } from './UsersIcon';
 export { default as VideoIcon } from './VideoIcon';
 export { default as VolumeIcon } from './VolumeIcon';

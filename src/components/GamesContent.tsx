@@ -60,6 +60,13 @@ const games = [
     folderName: 'ArcaneLegacy',
     description: 'A top-down 2D adventure. Wield your sword and uncover ancient secrets.',
     cover: '/filesystem/Games/ArcaneLegacy/cover.jpg'
+  },
+  {
+    id: 'towerforgedefense',
+    title: 'TowerForge Defense',
+    folderName: 'TowerForgeDefense',
+    description: 'A classic tower defense game. Build towers to defeat waves of enemies.',
+    cover: '/filesystem/Games/TowerForgeDefense/cover.jpg'
   }
 ];
 
@@ -82,6 +89,8 @@ const GameCard = ({ game, status, onInstall }: { game: Game, status: GameStatus,
       openWindow(WINDOW_DEFS.PIXEL_QUEST);
     } else if (game.id === 'arcanelegacy') {
       openWindow(WINDOW_DEFS.ARCANE_LEGACY);
+    } else if (game.id === 'towerforgedefense') {
+      openWindow(WINDOW_DEFS.TOWER_FORGE_DEFENSE);
     } else {
       todoImplement(`The 'Play' button for "${game.title}" was clicked. Implement launching the game.`);
     }

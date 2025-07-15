@@ -42,6 +42,7 @@ const APP_FILENAME_TO_DEF_KEY: { [key: string]: keyof typeof WINDOW_DEFS } = {
     'CloudStorage.app': 'CLOUD_STORAGE',
     'VPN.app': 'VPN',
     'ArcaneLegacy.app': 'ARCANE_LEGACY',
+    'TowerForgeDefense.app': 'TOWER_FORGE_DEFENSE',
     'SpaceAdventures.app': 'SPACE_ADVENTURES',
 };
 
