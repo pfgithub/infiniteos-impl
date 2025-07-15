@@ -1,3 +1,4 @@
+export { default as ArcaneLegacyIcon } from './ArcaneLegacyIcon';
 export { default as AppearanceIcon } from './AppearanceIcon';
 export { default as ArrowUpIcon } from './ArrowUpIcon';
 export { default as BrowserIcon } from './BrowserIcon';

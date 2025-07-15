@@ -10,6 +10,7 @@ export const initialFilesystem = {
     "/Users/Admin/Desktop/Games.desktop": {},
     "/Users/Admin/Desktop/Clock.desktop": {},
     "/Users/Admin/Desktop/Calculator.desktop": {},
+    "/Users/Admin/Desktop/Arcane Legacy.desktop": {},
     "/Users/Admin/Documents/": {},
     "/Users/Admin/Documents/Work/": {},
     "/Users/Admin/Documents/Work/Project_Proposal.pdf": {},
@@ -94,6 +95,13 @@ export const initialFilesystem = {
     "/Games/PixelQuest/main_menu_bg.jpg": {
         "url": "https://images.unsplash.com/photo-1620421680384-2d69caf45451?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
+    "/Games/ArcaneLegacy/": {},
+    "/Games/ArcaneLegacy/cover.jpg": {
+        "url": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    },
+    "/Games/ArcaneLegacy/main_menu_bg.jpg": {
+        "url": "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    },
     "/System/": {},
     "/System/SystemInfo.txt": {},
     "/System/config/": {},
@@ -140,6 +148,7 @@ export const initialFilesystem = {
     "/Applications/PDF_Reader.app": {},
     "/Applications/CloudStorage.app": {},
     "/Applications/VPN.app": {},
+    "/Applications/ArcaneLegacy.app": {},
     "/Applications/SpaceAdventures.app": {},
     "/.trash/": {},
     "/.trash/1721052000000-Q3_Financial_Report.docx": {

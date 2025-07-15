@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DesktopIcon from './DesktopIcon';
-import { BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, SettingsIcon, ClockIcon, CalculatorIcon } from '../icons';
+import { BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, SettingsIcon, ClockIcon, CalculatorIcon, ArcaneLegacyIcon } from '../icons';
 import useWindowStore from '../store/windowStore';
 import { WINDOW_DEFS } from '../windows';
 import { readDir } from '../filesystem';
@@ -13,6 +13,7 @@ const desktopFileMap: Record<string, { icon: React.ReactElement, windowDef: (typ
     'Settings.desktop': { icon: <SettingsIcon />, windowDef: WINDOW_DEFS.SETTINGS },
     'Clock.desktop': { icon: <ClockIcon />, windowDef: WINDOW_DEFS.CLOCK },
     'Calculator.desktop': { icon: <CalculatorIcon />, windowDef: WINDOW_DEFS.CALCULATOR },
+    'Arcane Legacy.desktop': { icon: <ArcaneLegacyIcon />, windowDef: WINDOW_DEFS.ARCANE_LEGACY },
 };
 
 function Desktop() {

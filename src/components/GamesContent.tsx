@@ -53,6 +53,13 @@ const games = [
     folderName: 'PixelQuest',
     description: 'A classic 2D RPG adventure. Explore, fight monsters, and level up.',
     cover: '/filesystem/Games/PixelQuest/cover.jpg'
+  },
+  {
+    id: 'arcanelegacy',
+    title: 'Arcane Legacy',
+    folderName: 'ArcaneLegacy',
+    description: 'A top-down 2D adventure. Wield your sword and uncover ancient secrets.',
+    cover: '/filesystem/Games/ArcaneLegacy/cover.jpg'
   }
 ];
 
@@ -73,6 +80,8 @@ const GameCard = ({ game, status, onInstall }: { game: Game, status: GameStatus,
       openWindow(WINDOW_DEFS.CITY_SKYLINES);
     } else if (game.id === 'pixelquest') {
       openWindow(WINDOW_DEFS.PIXEL_QUEST);
+    } else if (game.id === 'arcanelegacy') {
+      openWindow(WINDOW_DEFS.ARCANE_LEGACY);
     } else {
       todoImplement(`The 'Play' button for "${game.title}" was clicked. Implement launching the game.`);
     }

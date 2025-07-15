@@ -1,7 +1,7 @@
 import React from 'react';
 import SettingsContent from './components/settings/SettingsContent';
 import FeedbackContent from './components/FeedbackContent';
-import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon, CalculatorIcon } from './icons';
+import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon, CalculatorIcon, ArcaneLegacyIcon } from './icons';
 import GamesContent from './components/GamesContent';
 import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMainMenu';
 import BrowserContent from './components/BrowserContent';
@@ -14,6 +14,7 @@ import IslandEscapeMainMenu from './components/games/islandescape/IslandEscapeMa
 import CitySkylinesMainMenu from './components/games/cityskylines/CitySkylinesMainMenu';
 import CalculatorContent from './components/CalculatorContent';
 import PixelQuestMainMenu from './components/games/pixelquest/PixelQuestMainMenu';
+import ArcaneLegacyMainMenu from './components/games/arcanelegacy/ArcaneLegacyMainMenu';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex flex-col items-center justify-center text-center gap-4">
@@ -90,6 +91,12 @@ export const WINDOW_DEFS = {
       title: 'Pixel Quest',
       icon: <GamesIcon className="h-6 w-6" />,
       component: PixelQuestMainMenu,
+    },
+    ARCANE_LEGACY: {
+      id: 'arcanelegacy_game',
+      title: 'Arcane Legacy',
+      icon: <ArcaneLegacyIcon className="h-6 w-6" />,
+      component: ArcaneLegacyMainMenu,
     },
     TEXT_EDITOR: {
       id: 'text_editor',
