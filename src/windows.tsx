@@ -8,6 +8,12 @@ const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ a
       <p>The <strong>{appName}</strong> application is not yet implemented.<br/> This is a placeholder window.</p>
     </div>
 );
+
+const DungeonDelveGameContent: React.FC<{ id: string }> = () => (
+    <div className="flex-grow p-4 flex items-center justify-center text-center bg-black">
+        <p className="text-2xl text-green-400 font-mono animate-pulse">Launching Dungeon Delve...</p>
+    </div>
+);
   
 export const WINDOW_DEFS = {
     SETTINGS: {
@@ -39,5 +45,11 @@ export const WINDOW_DEFS = {
       title: 'Recycle Bin',
       icon: <RecycleBinIcon className="h-6 w-6" />,
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Recycle Bin" />,
+    },
+    DUNGEON_DELVE: {
+      id: 'dungeondelve_game',
+      title: 'Dungeon Delve',
+      icon: <GamesIcon className="h-6 w-6" />,
+      component: DungeonDelveGameContent,
     },
 };

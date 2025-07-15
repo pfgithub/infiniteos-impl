@@ -1,5 +1,7 @@
 import React from 'react';
 import { todoImplement } from '../todo';
+import useWindowStore from '../store/windowStore';
+import { WINDOW_DEFS } from '../windows';
 
 const games = [
   {
@@ -41,6 +43,16 @@ const games = [
 ];
 
 const GameCard = ({ game }: { game: typeof games[0] }) => {
+  const { openWindow } = useWindowStore();
+
+  const handlePlay = () => {
+    if (game.id === 'dungeondelve') {
+      openWindow(WINDOW_DEFS.DUNGEON_DELVE);
+    } else {
+      todoImplement(`The 'Play' button for "${game.title}" was clicked. Implement launching the game.`);
+    }
+  };
+
   return (
     <div className="bg-black/20 rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
       <img src={game.cover} alt={`${game.title} cover`} className="w-full h-48 object-cover bg-gray-700" />
@@ -49,7 +61,7 @@ const GameCard = ({ game }: { game: typeof games[0] }) => {
         <p className="text-gray-400 text-sm mb-4">{game.description}</p>
         <button 
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
-          onClick={() => todoImplement(`The 'Play' button for "${game.title}" was clicked. Implement launching the game.`)}
+          onClick={handlePlay}
         >
           Play
         </button>
