@@ -1,5 +1,6 @@
 import React from 'react';
 import { MinimizeIcon, MaximizeIcon, CloseIcon } from '../icons';
+import { todoImplement } from '../todo';
 
 function WindowTitleBar({ icon, title }) {
   return (
@@ -12,13 +13,13 @@ function WindowTitleBar({ icon, title }) {
         <span className="font-semibold">{title}</span>
       </div>
       <div className="flex items-center">
-        <button className="p-2 rounded-md hover:bg-white/10" aria-label="Minimize">
+        <button className="p-2 rounded-md hover:bg-white/10" aria-label="Minimize" onClick={() => todoImplement(`The minimize button on the '${title}' window was clicked. Implement minimizing the window.`)}>
           <MinimizeIcon />
         </button>
-        <button className="p-2 rounded-md hover:bg-white/10" aria-label="Maximize">
+        <button className="p-2 rounded-md hover:bg-white/10" aria-label="Maximize" onClick={() => todoImplement(`The maximize button on the '${title}' window was clicked. Implement maximizing/restoring the window.`)}>
           <MaximizeIcon />
         </button>
-        <button className="p-2 rounded-md hover:bg-red-600" aria-label="Close">
+        <button className="p-2 rounded-md hover:bg-red-600" aria-label="Close" onClick={() => todoImplement(`The close button on the '${title}' window was clicked. Implement closing the window.`)}>
           <CloseIcon />
         </button>
       </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { todoImplement } from '../../todo';
 
 function SystemSettings() {
   return (
@@ -27,7 +28,7 @@ function SystemSettings() {
             <div className="w-full bg-gray-600 rounded-full h-4">
               <div className="bg-blue-500 h-4 rounded-full" style={{ width: '25%' }}></div>
             </div>
-            <button id="settings_storage_details" className="mt-4 text-blue-400 hover:underline">Show more details</button>
+            <button id="settings_storage_details" className="mt-4 text-blue-400 hover:underline" onClick={() => todoImplement("The 'Show more details' button for storage was clicked. Implement a view that shows detailed storage usage by category (apps, documents, etc.).")}>Show more details</button>
           </div>
         </div>
 
@@ -38,7 +39,10 @@ function SystemSettings() {
             <div className="flex justify-between"><span className="text-gray-400">Edition</span><span className="font-medium">CuOS Home</span></div>
             <div className="flex justify-between"><span className="text-gray-400">Version</span><span className="font-medium">1.2 "Aquamarine"</span></div>
             <div className="flex justify-between"><span className="text-gray-400">Installed on</span><span className="font-medium">06/21/2025</span></div>
-            <button id="settings_check_updates" className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors w-full sm:w-auto">Check for updates</button>
+            <button 
+              id="settings_check_updates" 
+              className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors w-full sm:w-auto"
+              onClick={() => todoImplement("The 'Check for updates' button in System settings was clicked. Implement the logic to check a server for OS updates and guide the user through installation if updates are available.")}>Check for updates</button>
           </div>
         </div>
       </div>

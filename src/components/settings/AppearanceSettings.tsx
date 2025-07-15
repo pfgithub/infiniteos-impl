@@ -1,4 +1,5 @@
 import React from 'react';
+import { todoImplement } from '../../todo';
 
 const wallpapers = [
   "/filesystem/Users/Admin/Pictures/Wallpapers/galaxy.jpg",
@@ -27,7 +28,13 @@ function AppearanceSettings() {
             <span>Dark Mode</span>
             <label htmlFor="theme_toggle" className="flex items-center cursor-pointer">
               <div className="relative">
-                <input type="checkbox" id="theme_toggle" className="sr-only peer" defaultChecked />
+                <input 
+                  type="checkbox" 
+                  id="theme_toggle" 
+                  className="sr-only peer" 
+                  defaultChecked 
+                  onChange={() => todoImplement("The theme toggle (Dark/Light mode) in Appearance settings was changed. Implement switching the UI between dark and light themes.")}
+                />
                 <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
                 <div className="absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-all peer-checked:translate-x-[1.5rem] peer-checked:bg-blue-500"></div>
               </div>
@@ -45,7 +52,10 @@ function AppearanceSettings() {
                   key={color}
                   aria-label={`Set accent color to ${color.split('-')[1]}`}
                   className={`w-12 h-12 rounded-full ${color} transition-transform hover:scale-110 ${activeAccent === color ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-white' : ''}`}
-                  onClick={() => setActiveAccent(color)}
+                  onClick={() => {
+                    setActiveAccent(color);
+                    todoImplement(`The accent color ${color.split('-')[1]} was selected. Implement applying this accent color system-wide.`);
+                  }}
                 />
               ))}
             </div>
@@ -66,11 +76,17 @@ function AppearanceSettings() {
                   src={wp} 
                   alt="Wallpaper option" 
                   className={`rounded-md cursor-pointer h-24 w-full object-cover transition-all ${activeWallpaper === wp ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-500' : 'hover:opacity-80'}`}
-                  onClick={() => setActiveWallpaper(wp)}
+                  onClick={() => {
+                    setActiveWallpaper(wp);
+                    todoImplement(`The wallpaper "${wp.split('/').pop()}" was selected. Implement setting this as the desktop background.`);
+                  }}
                 />
               ))}
             </div>
-            <button id="settings_upload_wallpaper" className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors w-full sm:w-auto">
+            <button 
+              id="settings_upload_wallpaper" 
+              className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors w-full sm:w-auto"
+              onClick={() => todoImplement("The 'Upload new wallpaper' button was clicked. Implement a file picker to allow users to upload and set a new wallpaper.")}>
               Upload new wallpaper
             </button>
           </div>
