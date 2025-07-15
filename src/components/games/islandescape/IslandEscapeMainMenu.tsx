@@ -81,7 +81,7 @@ const IslandEscapeMainMenu: React.FC<IslandEscapeMainMenuProps> = ({ id }) => {
 
   return (
     <div 
-      className="flex-grow flex flex-col items-center justify-center text-white bg-cover bg-center bg-black overflow-y-auto"
+      className="flex-grow flex flex-col items-center text-white bg-cover bg-center bg-black overflow-y-auto"
       style={{ backgroundImage: backgroundUrl ? `url('${backgroundUrl}')` : 'none' }}
     >
       {renderContent()}
