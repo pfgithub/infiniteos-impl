@@ -25,10 +25,32 @@ const server = serve({
         apply(prompt, result);
       }catch(e) {
         console.error(e);
-        return new Response("error", {status: 400, headers: {'Content-Type': "text/plain"}});
+        return new Response("error", {status: 400, headers: {'Content-Type': "text/plain; charset=utf-8"}});
       }
-      return new Response("ok", {headers: {'Content-Type': "text/plain"}});
+      return new Response("ok", {headers: {'Content-Type': "text/plain; charset=utf-8"}});
     }},
+    "/api/llm": async (req) => {
+      const url = new URL(req.url);
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", {
+        method: "POST",
+        headers: {
+          'Content-Type': "application/json",
+          'X-goog-api-key': process.env.GEMINI_KEY ?? "",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: url.searchParams.get("prompt") ?? "No prompt",
+                }
+              ],
+            }
+          ],
+        }),
+      });
+      return new Response(response.body, {status: response.status, headers: {'Content-Type': "text/plain; charset=utf-8"}});
+    },
   },
 
   development: process.env.NODE_ENV !== "production" && {
