@@ -2,11 +2,10 @@ import React from 'react';
 import TaskbarItem from './TaskbarItem';
 import SystemTray from './SystemTray';
 import { StartIcon } from '../icons';
-import { todoImplement } from '../todo';
 import useWindowStore from '../store/windowStore';
 import { WINDOW_DEFS } from '../windows';
 
-function Taskbar() {
+function Taskbar({ onStartClick }: { onStartClick: () => void }) {
   const { windows, openWindow, focusWindow, toggleMinimize } = useWindowStore();
 
   const getFocusedWindow = () => {
@@ -60,7 +59,7 @@ function Taskbar() {
           id="start_button" 
           className="p-2 rounded hover:bg-white/20" 
           aria-label="Start Menu"
-          onClick={() => todoImplement("The Start Menu button was clicked. Implement opening the start menu.")}
+          onClick={onStartClick}
         >
           <StartIcon />
         </button>

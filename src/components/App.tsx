@@ -4,11 +4,13 @@ import Taskbar from './Taskbar';
 import useWindowStore from '../store/windowStore';
 import Window from './Window';
 import { initialize, readFile } from '../filesystem';
+import StartMenu from './StartMenu';
 
 function App() {
   const { windows } = useWindowStore();
   const [backgroundUrl, setBackgroundUrl] = useState('');
   const [isFsReady, setIsFsReady] = useState(false);
+  const [isStartMenuOpen, setStartMenuOpen] = useState(false);
 
   const loadBackground = async () => {
     try {
@@ -26,6 +28,13 @@ function App() {
     } catch (error) {
       console.error("Failed to load background:", error);
     }
+  };
+
+  const toggleStartMenu = () => {
+    setStartMenuOpen(prev => !prev);
+  };
+  const closeStartMenu = () => {
+    setStartMenuOpen(false);
   };
 
   useEffect(() => {
@@ -46,6 +55,22 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isStartMenuOpen) {
+        const startButton = document.getElementById('start_button');
+        const startMenu = document.getElementById('start_menu');
+        if (startButton && startButton.contains(event.target as Node)) return;
+        if (startMenu && startMenu.contains(event.target as Node)) return;
+        closeStartMenu();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isStartMenuOpen]);
+
 
   const backgroundStyle = {
     backgroundImage: backgroundUrl ? `url('${backgroundUrl}')` : 'none',
@@ -65,7 +90,8 @@ function App() {
             <Window key={window.id} window={window} />
           ))}
         </div>
-        <Taskbar />
+        <StartMenu isOpen={isStartMenuOpen} onClose={closeStartMenu} />
+        <Taskbar onStartClick={toggleStartMenu} />
       </div>
     </div>
   );
