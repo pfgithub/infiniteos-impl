@@ -58,11 +58,13 @@ function App() {
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-cover bg-center" style={backgroundStyle}>
-      <div className="h-full w-full flex flex-col relative">
-        <Desktop />
-        {windows.map((window) => (
-          <Window key={window.id} window={window} />
-        ))}
+      <div className="h-full w-full flex flex-col">
+        <div className="flex-grow relative">
+          <Desktop />
+          {windows.map((window) => (
+            <Window key={window.id} window={window} />
+          ))}
+        </div>
         <Taskbar />
       </div>
     </div>

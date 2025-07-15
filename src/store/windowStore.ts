@@ -1,6 +1,9 @@
 import React from 'react';
 import { create } from 'zustand';
 
+const DEFAULT_WIDTH = 900;
+const DEFAULT_HEIGHT = 640;
+
 export interface WindowInstance {
   id: string;
   title: string;
@@ -9,16 +12,25 @@ export interface WindowInstance {
   zIndex: number;
   isMinimized: boolean;
   isMaximized: boolean;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  prevX?: number;
+  prevY?: number;
+  prevWidth?: number;
+  prevHeight?: number;
 }
 
 interface WindowState {
   windows: WindowInstance[];
   nextZIndex: number;
-  openWindow: (windowConfig: Omit<WindowInstance, 'zIndex' | 'isMinimized' | 'isMaximized'>) => void;
+  openWindow: (windowConfig: Omit<WindowInstance, 'zIndex' | 'isMinimized' | 'isMaximized' | 'x' | 'y' | 'width' | 'height' | 'prevX' | 'prevY' | 'prevWidth' | 'prevHeight'>) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
   toggleMinimize: (id: string) => void;
   toggleMaximize: (id: string) => void;
+  setWindowProps: (id: string, props: Partial<WindowInstance>) => void;
 }
 
 const useWindowStore = create<WindowState>((set) => ({
@@ -37,12 +49,21 @@ const useWindowStore = create<WindowState>((set) => ({
           nextZIndex: state.nextZIndex + 1,
         };
       } else {
-        // If window doesn't exist, add it
+        // Position new windows with a slight cascade
+        const openWindows = state.windows.filter(w => !w.isMinimized).length;
+        const offset = openWindows * 30;
+        const { innerWidth, innerHeight } = typeof window !== 'undefined' ? window : { innerWidth: 1920, innerHeight: 1080 };
+        const taskbarHeight = 48;
+
         const newWindow: WindowInstance = {
           ...windowConfig,
           zIndex: state.nextZIndex + 1,
           isMinimized: false,
           isMaximized: false,
+          width: DEFAULT_WIDTH,
+          height: DEFAULT_HEIGHT,
+          x: (innerWidth - DEFAULT_WIDTH) / 2 + offset,
+          y: (innerHeight - taskbarHeight - DEFAULT_HEIGHT) / 2 + offset,
         };
         return {
           windows: [...state.windows, newWindow],
@@ -60,8 +81,12 @@ const useWindowStore = create<WindowState>((set) => ({
 
   focusWindow: (id) => {
     set((state) => {
-      // If already focused, do nothing
-      const focusedWindow = state.windows.reduce((max, w) => (w.zIndex > max.zIndex ? w : max), state.windows[0]);
+      const windowsSortedByZ = [...state.windows]
+        .filter(w => !w.isMinimized)
+        .sort((a,b) => b.zIndex - a.zIndex);
+      
+      const focusedWindow = windowsSortedByZ.length > 0 ? windowsSortedByZ[0] : null;
+
       if (focusedWindow && focusedWindow.id === id) {
         return state;
       }
@@ -85,9 +110,38 @@ const useWindowStore = create<WindowState>((set) => ({
 
   toggleMaximize: (id) => {
     set((state) => ({
-      windows: state.windows.map((w) =>
-        w.id === id ? { ...w, isMaximized: !w.isMaximized } : w
-      ),
+      windows: state.windows.map((w) => {
+        if (w.id === id) {
+          if (w.isMaximized) {
+            // Restore
+            return {
+              ...w,
+              isMaximized: false,
+              x: w.prevX ?? w.x,
+              y: w.prevY ?? w.y,
+              width: w.prevWidth ?? DEFAULT_WIDTH,
+              height: w.prevHeight ?? DEFAULT_HEIGHT,
+            };
+          } else {
+            // Maximize
+            return {
+              ...w,
+              isMaximized: true,
+              prevX: w.x,
+              prevY: w.y,
+              prevWidth: w.width,
+              prevHeight: w.height,
+            };
+          }
+        }
+        return w;
+      }),
+    }));
+  },
+
+  setWindowProps: (id, props) => {
+    set((state) => ({
+      windows: state.windows.map((w) => (w.id === id ? { ...w, ...props } : w)),
     }));
   },
 }));
