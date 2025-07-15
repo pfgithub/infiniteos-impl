@@ -54,7 +54,7 @@ const PixelQuestMainMenu: React.FC<PixelQuestMainMenuProps> = ({ id }) => {
             <h1 className="text-6xl font-extrabold text-blue-300 mb-2" style={{ textShadow: '2px 2px 8px #60a5fa' }}>
               Pixel Quest
             </h1>
-            <p className="text-blue-100 mb-10 text-lg">A 2D Top-Down Adventure Game.</p>
+            <p className="text-blue-100 mb-10 text-lg">A classic 2D RPG adventure.</p>
             
             <div className="flex flex-col gap-4">
               <MainMenuButton id="pixelquest_new_game" onClick={() => setScreen('in_game')}>

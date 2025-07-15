@@ -51,7 +51,7 @@ const games = [
     id: 'pixelquest',
     title: 'Pixel Quest',
     folderName: 'PixelQuest',
-    description: 'A 2D top-down adventure maze game.',
+    description: 'A classic 2D RPG adventure. Explore, fight monsters, and level up.',
     cover: '/filesystem/Games/PixelQuest/cover.jpg'
   }
 ];
