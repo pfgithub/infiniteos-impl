@@ -46,6 +46,13 @@ const games = [
     folderName: 'CitySkylines',
     description: 'Build and manage the city of your dreams.',
     cover: '/filesystem/Games/CitySkylines/cover.jpg'
+  },
+  {
+    id: 'pixelquest',
+    title: 'Pixel Quest',
+    folderName: 'PixelQuest',
+    description: 'A 2D top-down adventure maze game.',
+    cover: '/filesystem/Games/PixelQuest/cover.jpg'
   }
 ];
 
@@ -64,6 +71,8 @@ const GameCard = ({ game, status, onInstall }: { game: Game, status: GameStatus,
       openWindow(WINDOW_DEFS.ISLAND_ESCAPE);
     } else if (game.id === 'cityskylines') {
       openWindow(WINDOW_DEFS.CITY_SKYLINES);
+    } else if (game.id === 'pixelquest') {
+      openWindow(WINDOW_DEFS.PIXEL_QUEST);
     } else {
       todoImplement(`The 'Play' button for "${game.title}" was clicked. Implement launching the game.`);
     }

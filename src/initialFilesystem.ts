@@ -87,6 +87,13 @@ export const initialFilesystem = {
     "/Games/CitySkylines/main_menu_bg.jpg": {
         "url": "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
+    "/Games/PixelQuest/": {},
+    "/Games/PixelQuest/cover.jpg": {
+        "url": "https://images.unsplash.com/photo-1593986429994-b2f56360c410?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    },
+    "/Games/PixelQuest/main_menu_bg.jpg": {
+        "url": "https://images.unsplash.com/photo-1620421680384-2d69caf45451?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    },
     "/System/": {},
     "/System/SystemInfo.txt": {},
     "/System/config/": {},
