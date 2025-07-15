@@ -1,6 +1,7 @@
 import React from 'react';
 import SettingsContent from './components/settings/SettingsContent';
 import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon } from './icons';
+import GamesContent from './components/GamesContent';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex items-center justify-center text-center">
@@ -31,7 +32,7 @@ export const WINDOW_DEFS = {
       id: 'my_games',
       title: 'My Games',
       icon: <GamesIcon className="h-6 w-6" />,
-      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="My Games" />,
+      component: GamesContent,
     },
     RECYCLE_BIN: {
       id: 'recycle_bin',
