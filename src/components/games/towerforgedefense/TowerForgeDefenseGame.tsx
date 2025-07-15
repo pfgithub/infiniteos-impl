@@ -16,17 +16,19 @@ const path = [
 ];
 
 const TOWER_TYPES = {
-    'Archer Tower': { cost: 100, color: '#c19a6b', name: 'Archer Tower', range: 3 * TILE_SIZE, damage: 10 },
-    'Cannon Tower': { cost: 150, color: '#808080', name: 'Cannon Tower', range: 2 * TILE_SIZE, damage: 25 },
-    'Mage Tower': { cost: 200, color: '#8a2be2', name: 'Mage Tower', range: 4 * TILE_SIZE, damage: 15 },
-    'Slow Tower': { cost: 80, color: '#add8e6', name: 'Slow Tower', range: 2.5 * TILE_SIZE, damage: 0 },
+    'Archer Tower': { cost: 100, color: '#c19a6b', name: 'Archer Tower', range: 3 * TILE_SIZE, damage: 10, attackSpeed: 1000, projectileColor: '#966919', projectileSpeed: 5 },
+    'Cannon Tower': { cost: 150, color: '#808080', name: 'Cannon Tower', range: 2 * TILE_SIZE, damage: 25, attackSpeed: 2000, projectileColor: '#36454F', projectileSpeed: 4 },
+    'Mage Tower': { cost: 200, color: '#8a2be2', name: 'Mage Tower', range: 4 * TILE_SIZE, damage: 15, attackSpeed: 1500, projectileColor: '#DA70D6', projectileSpeed: 6 },
+    'Slow Tower': { cost: 80, color: '#add8e6', name: 'Slow Tower', range: 2.5 * TILE_SIZE, damage: 0, attackSpeed: 2500, projectileColor: '#87CEEB', projectileSpeed: 5 },
 };
 type TowerType = keyof typeof TOWER_TYPES;
 
 interface Tower {
+    id: number;
     x: number;
     y: number;
     type: TowerType;
+    lastShotTime: number;
 }
 
 interface Enemy {
@@ -37,6 +39,17 @@ interface Enemy {
     maxHealth: number;
     speed: number;
     pathIndex: number;
+    goldOnKill: number;
+}
+
+interface Projectile {
+    id: number;
+    x: number;
+    y: number;
+    targetId: number;
+    speed: number;
+    damage: number;
+    color: string;
 }
 
 type GameStatus = 'idle' | 'wave_in_progress' | 'game_over';
@@ -69,15 +82,17 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
     const [wave, setWave] = useState(0);
     const [towers, setTowers] = useState<Tower[]>([]);
     const [enemies, setEnemies] = useState<Enemy[]>([]);
+    const [projectiles, setProjectiles] = useState<Projectile[]>([]);
     const [selectedTowerType, setSelectedTowerType] = useState<TowerType | null>(null);
     const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
     const [mousePos, setMousePos] = useState({ x: -1, y: -1 });
     const spawnIntervalRef = useRef<number | null>(null);
     const [gameOver, setGameOver] = useState(false);
+    const lastTimeRef = useRef(0);
 
     // Use a ref to hold the latest state for the game loop and event handlers
-    const stateRef = useRef({ gold, towers, selectedTowerType, mousePos, enemies, health, wave, gameStatus, gameOver });
-    stateRef.current = { gold, towers, selectedTowerType, mousePos, enemies, health, wave, gameStatus, gameOver };
+    const stateRef = useRef({ gold, towers, selectedTowerType, mousePos, enemies, health, wave, gameStatus, gameOver, projectiles });
+    stateRef.current = { gold, towers, selectedTowerType, mousePos, enemies, health, wave, gameStatus, gameOver, projectiles };
 
     const handleSelectTower = (type: TowerType) => {
         if (TOWER_TYPES[type].cost > gold) {
@@ -106,6 +121,7 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
                         maxHealth: 100 + newWave * 20,
                         speed: 1,
                         pathIndex: 0,
+                        goldOnKill: 5 + newWave,
                     }]);
                     enemiesSpawned++;
                 } else {
@@ -114,7 +130,6 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
                 }
             }, 500);
             spawnIntervalRef.current = intervalId;
-            todoImplement('Towers should shoot at enemies. This involves: 1. Towers detecting enemies in range. 2. A targeting system. 3. A shooting mechanism (e.g. projectiles). 4. Damaging enemies and updating their health. 5. Awarding gold on kill.');
         }
     };
 
@@ -157,6 +172,12 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
                 context.fillRect(tower.x * TILE_SIZE, tower.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 context.strokeStyle = 'black';
                 context.strokeRect(tower.x * TILE_SIZE, tower.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+
+                // Draw tower range on hover or if selected (for later)
+                // context.beginPath();
+                // context.arc(tower.x * TILE_SIZE + TILE_SIZE/2, tower.y * TILE_SIZE + TILE_SIZE/2, towerInfo.range, 0, 2*Math.PI);
+                // context.strokeStyle = "rgba(255,255,255,0.3)";
+                // context.stroke();
             });
         };
 
@@ -165,6 +186,15 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
             const tileX = Math.floor(currentMousePos.x / TILE_SIZE);
             const tileY = Math.floor(currentMousePos.y / TILE_SIZE);
             if (tileX < 0 || tileX >= MAP_WIDTH_TILES || tileY < 0 || tileY >= MAP_HEIGHT_TILES) return;
+
+            const towerInfo = TOWER_TYPES[currentSelectedTower];
+            context.beginPath();
+            context.arc(tileX * TILE_SIZE + TILE_SIZE/2, tileY * TILE_SIZE + TILE_SIZE/2, towerInfo.range, 0, 2*Math.PI);
+            context.fillStyle = "rgba(255,255,255,0.1)";
+            context.fill();
+            context.strokeStyle = "rgba(255,255,255,0.4)";
+            context.stroke();
+
             const canPlace = !isPath(tileX, tileY) && !currentTowers.some(t => t.x === tileX && t.y === tileY);
             context.globalAlpha = 0.5;
             context.fillStyle = canPlace ? 'white' : 'red';
@@ -189,62 +219,157 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
                 context.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
 
                 const currentHealthWidth = healthBarWidth * (enemy.health / enemy.maxHealth);
-                context.fillStyle = 'green';
+                context.fillStyle = enemy.health / enemy.maxHealth > 0.5 ? '#22c55e' : enemy.health / enemy.maxHealth > 0.2 ? '#facc15' : '#ef4444';
                 context.fillRect(healthBarX, healthBarY, currentHealthWidth, healthBarHeight);
             });
         };
-        
-        const updateEnemies = () => {
-            if (stateRef.current.gameOver) return;
-            setEnemies(currentEnemies => {
-                if (currentEnemies.length === 0) return [];
-                
-                let healthToLose = 0;
-                const stillAliveEnemies: Enemy[] = [];
-                
-                for (const enemy of currentEnemies) {
-                    const nextWaypointIndex = enemy.pathIndex + 1;
-                    if (nextWaypointIndex >= path.length) {
-                        healthToLose += 10;
-                        continue;
-                    }
-                    
-                    const targetWaypoint = path[nextWaypointIndex];
-                    const targetX = targetWaypoint.x * TILE_SIZE + TILE_SIZE / 2;
-                    const targetY = targetWaypoint.y * TILE_SIZE + TILE_SIZE / 2;
-                    
-                    const dx = targetX - enemy.x;
-                    const dy = targetY - enemy.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    const newEnemy = { ...enemy };
-                    if (distance < newEnemy.speed) {
-                        newEnemy.x = targetX;
-                        newEnemy.y = targetY;
-                        newEnemy.pathIndex = nextWaypointIndex;
-                    } else {
-                        newEnemy.x += (dx / distance) * newEnemy.speed;
-                        newEnemy.y += (dy / distance) * newEnemy.speed;
-                    }
-                    stillAliveEnemies.push(newEnemy);
-                }
 
-                if (healthToLose > 0) {
-                    setHealth(h => Math.max(0, h - healthToLose));
+        const drawProjectiles = (context: CanvasRenderingContext2D, currentProjectiles: Projectile[]) => {
+            currentProjectiles.forEach(p => {
+                context.fillStyle = p.color;
+                context.beginPath();
+                context.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+                context.fill();
+            });
+        };
+        
+        const updateTowersAndShoot = (timestamp: number) => {
+            if (stateRef.current.gameOver) return;
+        
+            const newProjectiles: Projectile[] = [];
+            let towersChanged = false;
+        
+            const updatedTowers = stateRef.current.towers.map(tower => {
+                const towerInfo = TOWER_TYPES[tower.type];
+                if (timestamp - tower.lastShotTime >= towerInfo.attackSpeed) {
+                    const target = stateRef.current.enemies.find(enemy => {
+                        const towerCenterX = tower.x * TILE_SIZE + TILE_SIZE / 2;
+                        const towerCenterY = tower.y * TILE_SIZE + TILE_SIZE / 2;
+                        const dx = enemy.x - towerCenterX;
+                        const dy = enemy.y - towerCenterY;
+                        return Math.sqrt(dx * dx + dy * dy) <= towerInfo.range;
+                    });
+        
+                    if (target) {
+                        newProjectiles.push({
+                            id: Date.now() + Math.random(),
+                            x: tower.x * TILE_SIZE + TILE_SIZE / 2,
+                            y: tower.y * TILE_SIZE + TILE_SIZE / 2,
+                            targetId: target.id,
+                            speed: towerInfo.projectileSpeed,
+                            damage: towerInfo.damage,
+                            color: towerInfo.projectileColor,
+                        });
+                        towersChanged = true;
+                        return { ...tower, lastShotTime: timestamp };
+                    }
                 }
-                return stillAliveEnemies;
+                return tower;
+            });
+        
+            if (towersChanged) {
+                setTowers(updatedTowers);
+            }
+            if (newProjectiles.length > 0) {
+                setProjectiles(p => [...p, ...newProjectiles]);
+            }
+        };
+
+        const updateProjectilesAndEnemies = () => {
+            if (stateRef.current.gameOver) return;
+          
+            const damageToApply = new Map<number, number>();
+            const enemiesMap = new Map(stateRef.current.enemies.map(e => [e.id, e]));
+          
+            // Update projectiles
+            setProjectiles(currentProjectiles =>
+              currentProjectiles.filter(p => {
+                const target = enemiesMap.get(p.targetId);
+                if (!target) return false;
+          
+                const dx = target.x - p.x;
+                const dy = target.y - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+          
+                if (dist < p.speed) {
+                  const currentDamage = damageToApply.get(p.targetId) || 0;
+                  damageToApply.set(p.targetId, currentDamage + p.damage);
+                  return false; // remove projectile
+                } else {
+                  p.x += (dx / dist) * p.speed;
+                  p.y += (dy / dist) * p.speed;
+                  return true;
+                }
+              })
+            );
+          
+            // Update enemies (damage, death, movement)
+            setEnemies(currentEnemies => {
+              let goldToAdd = 0;
+              let healthToLose = 0;
+          
+              const updatedEnemies = currentEnemies.map(enemy => {
+                if (damageToApply.has(enemy.id)) {
+                  return { ...enemy, health: enemy.health - damageToApply.get(enemy.id)! };
+                }
+                return enemy;
+              });
+          
+              const finalEnemies = updatedEnemies.reduce((acc, enemy) => {
+                if (enemy.health <= 0) {
+                  goldToAdd += enemy.goldOnKill;
+                  return acc;
+                }
+          
+                const nextWaypointIndex = enemy.pathIndex + 1;
+                if (nextWaypointIndex >= path.length) {
+                  healthToLose += 10;
+                  return acc;
+                }
+          
+                const targetWaypoint = path[nextWaypointIndex];
+                const targetX = targetWaypoint.x * TILE_SIZE + TILE_SIZE / 2;
+                const targetY = targetWaypoint.y * TILE_SIZE + TILE_SIZE / 2;
+          
+                const dx = targetX - enemy.x;
+                const dy = targetY - enemy.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+          
+                const newEnemy = { ...enemy };
+                if (distance < newEnemy.speed) {
+                  newEnemy.x = targetX;
+                  newEnemy.y = targetY;
+                  newEnemy.pathIndex = nextWaypointIndex;
+                } else {
+                  newEnemy.x += (dx / distance) * newEnemy.speed;
+                  newEnemy.y += (dy / distance) * newEnemy.speed;
+                }
+                acc.push(newEnemy);
+                return acc;
+              }, [] as Enemy[]);
+          
+              if (goldToAdd > 0) setGold(g => g + goldToAdd);
+              if (healthToLose > 0) setHealth(h => Math.max(0, h - healthToLose));
+          
+              return finalEnemies;
             });
         };
 
-        const gameLoop = () => {
-            updateEnemies();
+        const gameLoop = (timestamp: number) => {
+            if (!lastTimeRef.current) {
+                lastTimeRef.current = timestamp;
+            }
+
+            updateTowersAndShoot(timestamp);
+            updateProjectilesAndEnemies();
             
-            const { towers, selectedTowerType, mousePos, enemies: currentEnemies, gameOver: isGameOver, wave: currentWave } = stateRef.current;
+            const { towers, selectedTowerType, mousePos, enemies: currentEnemies, projectiles: currentProjectiles, gameOver: isGameOver, wave: currentWave } = stateRef.current;
             
             ctx.clearRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
             drawMap(ctx);
             drawTowers(ctx, towers);
             drawEnemies(ctx, currentEnemies);
+            drawProjectiles(ctx, currentProjectiles);
             drawPlacementPreview(ctx, selectedTowerType, towers, mousePos);
             
             if (isGameOver) {
@@ -258,9 +383,11 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
                 ctx.fillText(`You reached wave ${currentWave}`, MAP_WIDTH / 2, MAP_HEIGHT / 2 + 50);
             }
 
+            lastTimeRef.current = timestamp;
             animationFrameId = window.requestAnimationFrame(gameLoop);
         };
-        gameLoop();
+        
+        animationFrameId = window.requestAnimationFrame(gameLoop);
 
         return () => {
             window.cancelAnimationFrame(animationFrameId);
@@ -295,7 +422,7 @@ const TowerForgeDefenseGame: React.FC<{ onBackToMenu: () => void }> = ({ onBackT
             
             if (canAfford && isValidPlacement) {
                 setGold(g => g - towerCost);
-                setTowers(t => [...t, { x: tileX, y: tileY, type: selectedTowerType }]);
+                setTowers(t => [...t, { id: Date.now() + Math.random(), x: tileX, y: tileY, type: selectedTowerType, lastShotTime: 0 }]);
                 setSelectedTowerType(null);
             } else {
                 console.log("Cannot place tower here.");
