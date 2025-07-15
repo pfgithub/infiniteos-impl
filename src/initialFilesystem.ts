@@ -9,6 +9,7 @@ export const initialFilesystem = {
     "/Users/Admin/Desktop/Settings.desktop": {},
     "/Users/Admin/Desktop/Games.desktop": {},
     "/Users/Admin/Desktop/Clock.desktop": {},
+    "/Users/Admin/Desktop/Calculator.desktop": {},
     "/Users/Admin/Documents/": {},
     "/Users/Admin/Documents/Work/": {},
     "/Users/Admin/Documents/Work/Project_Proposal.pdf": {},

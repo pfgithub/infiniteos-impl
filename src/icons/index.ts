@@ -1,6 +1,7 @@
 export { default as AppearanceIcon } from './AppearanceIcon';
 export { default as ArrowUpIcon } from './ArrowUpIcon';
 export { default as BrowserIcon } from './BrowserIcon';
+export { default as CalculatorIcon } from './CalculatorIcon';
 export { default as ClockIcon } from './ClockIcon';
 export { default as CloseIcon } from './CloseIcon';
 export { default as DownloadIcon } from './DownloadIcon';

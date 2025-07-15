@@ -1,7 +1,7 @@
 import React from 'react';
 import SettingsContent from './components/settings/SettingsContent';
 import FeedbackContent from './components/FeedbackContent';
-import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon } from './icons';
+import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon, ClockIcon, FileIcon, CalculatorIcon } from './icons';
 import GamesContent from './components/GamesContent';
 import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMainMenu';
 import BrowserContent from './components/BrowserContent';
@@ -12,6 +12,7 @@ import { todoImplement } from './todo';
 import RecycleBinContent from './components/RecycleBinContent';
 import IslandEscapeMainMenu from './components/games/islandescape/IslandEscapeMainMenu';
 import CitySkylinesMainMenu from './components/games/cityskylines/CitySkylinesMainMenu';
+import CalculatorContent from './components/CalculatorContent';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex flex-col items-center justify-center text-center gap-4">
@@ -110,8 +111,8 @@ export const WINDOW_DEFS = {
     CALCULATOR: {
       id: 'calculator',
       title: 'Calculator',
-      icon: <SystemIcon className="h-6 w-6" />,
-      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Calculator" />,
+      icon: <CalculatorIcon className="h-6 w-6" />,
+      component: CalculatorContent,
     },
     TERMINAL: {
       id: 'terminal',
