@@ -45,18 +45,52 @@ export async function llmRoute(req: Request): Promise<Response> {
       return new Response("LLM response has no body", { status: 500, headers: { 'Content-Type': "text/plain; charset=utf-8" } });
     }
 
+    // This transform stream parses the SSE from Gemini and extracts the text content.
     const transformStream = new TransformStream({
-      start() {
+      start(controller) {
         this.buffer = '';
         this.decoder = new TextDecoder();
+        this.encoder = new TextEncoder();
       },
       transform(chunk, controller) {
-        const decoded = this.decoder.decode(chunk, { stream: true });
-        console.log(decoded);
-        controller.enqueue(decoded);
-        this.buffer += decoded;
+        this.buffer += this.decoder.decode(chunk, { stream: true });
+        const lines = this.buffer.split('\n');
+        this.buffer = lines.pop() || ''; // Keep the last, possibly incomplete line
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const jsonString = line.substring(5).trim();
+              if (jsonString) {
+                const jsonData = JSON.parse(jsonString);
+                const textContent = jsonData.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (textContent) {
+                  controller.enqueue(this.encoder.encode(textContent));
+                }
+              }
+            } catch (e) {
+              console.warn('Could not parse JSON from SSE chunk:', line, e);
+            }
+          }
+        }
       },
-      flush() { }
+      flush(controller) {
+        // Process any remaining data in the buffer when the stream closes.
+        if (this.buffer.startsWith('data: ')) {
+          try {
+            const jsonString = this.buffer.substring(5).trim();
+            if (jsonString) {
+              const jsonData = JSON.parse(jsonString);
+              const textContent = jsonData.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (textContent) {
+                controller.enqueue(this.encoder.encode(textContent));
+              }
+            }
+          } catch (e) {
+            console.warn('Could not parse JSON from final SSE chunk:', this.buffer, e);
+          }
+        }
+      }
     });
 
     const stream = geminiResponse.body.pipeThrough(transformStream);

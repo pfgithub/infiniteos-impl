@@ -56,21 +56,29 @@ ${history ? `Recent Events:\n${history}` : 'The adventure is just beginning.'}
 
 ${action ? `Player's Action: "${action}"` : 'Generate the opening scene for the adventure.'}
 
-Your task is to generate the next part of the story. Respond ONLY with a valid JSON object with the following structure. Do not add any text, comments, or markdown before or after the JSON object.
+Your task is to generate the next part of the story. Respond ONLY with a valid JSON object with the following structure. Do not add any text, comments, or markdown fences (like \`\`\`json) before or after the JSON object.
+
+The JSON object must have these keys:
+- "description": "A detailed, engaging description of the new scene. Be creative and concise. Maximum 2-3 paragraphs."
+- "image_prompt": "A short, descriptive prompt for an AI image generator to create a picture for this scene. E.g., 'A fantasy warrior stands at the entrance of a dark, foreboding cave, digital art, epic lighting.'"
+- "choices": An array of 3 objects, where each object has a "text" key with a short description of the choice.
+- "character_update": An object with an "hp_change" key (a number, can be positive, negative, or zero).
+
+Example Response Format:
 {
-  "description": "A detailed, engaging description of the new scene. Be creative and concise. Maximum 2-3 paragraphs.",
-  "image_prompt": "A short, descriptive prompt for an AI image generator to create a picture for this scene. E.g., 'A fantasy warrior stands at the entrance of a dark, foreboding cave, digital art, epic lighting.'",
+  "description": "The old wooden door creaks open, revealing a dusty chamber filled with cobwebs. A single torch flickers on the far wall, casting long, dancing shadows. In the center of the room, a stone pedestal holds an ancient, leather-bound book.",
+  "image_prompt": "A dusty, torch-lit dungeon chamber with a book on a pedestal, fantasy, digital art, mysterious atmosphere.",
   "choices": [
-    { "text": "A short description of the first choice." },
-    { "text": "A short description of the second choice." },
-    { "text": "A short description of the third choice." }
+    { "text": "Examine the ancient book." },
+    { "text": "Search the room for treasure." },
+    { "text": "Listen at the far door for any sounds." }
   ],
   "character_update": {
     "hp_change": 0
   }
 }
 
-Generate the response for the player.
+Generate the JSON response for the player's current situation.
 `;
     return prompt;
   };
@@ -103,13 +111,14 @@ Generate the response for the player.
         accumulatedContent += decoder.decode(value, { stream: true });
       }
 
+      // The LLM sometimes wraps the JSON in markdown, so we clean it.
       const cleanedContent = accumulatedContent.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
       const newSceneData = JSON.parse(cleanedContent);
 
       setScene(newSceneData);
       storyHistory.current.push(newSceneData.description);
       
-      if (newSceneData.character_update && newSceneData.character_update.hp_change) {
+      if (newSceneData.character_update && typeof newSceneData.character_update.hp_change === 'number') {
         setCharacter(prev => ({
           ...prev,
           hp: Math.min(prev.maxHp, Math.max(0, prev.hp + newSceneData.character_update.hp_change))
@@ -127,6 +136,7 @@ Generate the response for the player.
 
   useEffect(() => {
     fetchNextScene();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChoice = (choice: Choice) => {
