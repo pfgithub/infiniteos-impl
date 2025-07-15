@@ -16,7 +16,7 @@ export function genViewerPrompt(): string {
 			continue;
 		}
 		let omitted = false;
-		if (file.includes("/games/")) omitted = true;
+		if (file.includes("/games/") && !file.includes("/towerforgedefense/")) omitted = true;
 		sourceFileList += omitted ? `- src/${file} (Omitted)\n` : `- src/${file}\n`;
 		if (omitted) continue;
 		sourceFileContents += `<source-file name="src/${file}">\n`;
