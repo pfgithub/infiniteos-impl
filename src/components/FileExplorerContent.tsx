@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { readDir } from '../filesystem';
+import { readDir, trashFile } from '../filesystem';
 import { todoImplement } from '../todo';
 import {
   FolderIcon,

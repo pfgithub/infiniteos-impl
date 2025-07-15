@@ -15,7 +15,7 @@ const BrowserContent: React.FC<{ id: string }> = ({ id }) => {
     setContent('');
 
     try {
-      const response = await fetch(`/api/llm?prompt=${encodeURIComponent(promptToGenerate)}`);
+      const response = await fetch(`/api/llm?prompt=${encodeURIComponent("Generate a complete, visually appealing, single-file HTML website based on the following prompt. The HTML should be self-contained, using inline CSS or a single <style> block. Do not use any external resources like images or scripts. The design should be modern and responsive. Prompt: " + promptToGenerate)}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

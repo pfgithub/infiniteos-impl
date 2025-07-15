@@ -56,8 +56,20 @@ function AppearanceSettings() {
 
   const handleSetWallpaper = async (wallpaper: Wallpaper) => {
       try {
-          const settings = await readFile('/Users/Admin/settings.ini');
-          const newContents = settings.contents.replace(/desktop_background=.*/, `desktop_background=${wallpaper.path}`);
+          let settings;
+          try {
+            settings = await readFile('/Users/Admin/settings.ini');
+          } catch {
+            settings = { contents: '' };
+          }
+          
+          let newContents;
+          if (settings.contents.includes('desktop_background=')) {
+            newContents = settings.contents.replace(/desktop_background=.*/, `desktop_background=${wallpaper.path}`);
+          } else {
+            newContents = `${settings.contents}\ndesktop_background=${wallpaper.path}`;
+          }
+          
           await writeFile('/Users/Admin/settings.ini', { ...settings, contents: newContents });
           setActiveWallpaperPath(wallpaper.path);
           window.dispatchEvent(new CustomEvent('settings-changed'));

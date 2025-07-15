@@ -147,6 +147,7 @@ export async function restoreTrashItem(trashPath: string): Promise<void> {
     if (!trashInfo || !trashInfo.originalPath) {
         throw new Error("Invalid trash item: missing original path metadata.");
     }
+    await mkdirp(trashInfo.originalPath);
     await writeFile(trashInfo.originalPath, trashInfo.data);
     await deleteFile(trashPath);
 }
@@ -166,6 +167,7 @@ export async function mkdirp(path: string): Promise<void> {
     if (!dirPath.endsWith('/')) {
         dirPath = dirPath.substring(0, dirPath.lastIndexOf('/') + 1);
     }
+    if (!dirPath) return;
     
     const parts = dirPath.split('/').filter(p => p.length > 0);
     let currentPath = '/';
@@ -196,20 +198,27 @@ export async function readDir(dirPath: string): Promise<{name: string, path: str
     return new Promise((resolve, reject) => {
         req.onsuccess = () => {
             const allKeys = req.result as string[];
-            const children = allKeys
-                .filter(key => key.startsWith(dirPath) && key !== dirPath)
-                .map(key => {
+            const children = new Map<string, {name: string, path: string, isDir: boolean}>();
+
+            allKeys.forEach(key => {
+                if (key.startsWith(dirPath) && key !== dirPath) {
                     const relativePath = key.substring(dirPath.length);
-                    // A direct child is one that does not contain any intermediate slashes.
-                    if (relativePath.slice(0, -1).includes('/')) {
-                        return null;
+                    const segments = relativePath.split('/');
+                    const childName = segments[0];
+
+                    if (childName && !children.has(childName)) {
+                        const isDir = segments.length > 1;
+                        const childPath = isDir ? `${dirPath}${childName}/` : `${dirPath}${childName}`;
+                        children.set(childName, {
+                            name: childName,
+                            path: childPath,
+                            isDir: isDir,
+                        });
                     }
-                    const isDir = key.endsWith('/');
-                    const name = isDir ? relativePath.slice(0, -1) : relativePath;
-                    return { name, path: key, isDir };
-                })
-                .filter((item): item is { name: string; path: string; isDir: boolean } => item !== null);
-            resolve(children);
+                }
+            });
+
+            resolve(Array.from(children.values()));
         };
         req.onerror = () => reject(req.error);
     });
