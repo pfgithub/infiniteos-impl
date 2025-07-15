@@ -1,13 +1,14 @@
 import { serve } from "bun";
 import index from "./src/index.html";
 import { genViewerPrompt } from "prompt";
-import prompt from "./other/prompt.html";
+import prompt from "./prompt/prompt.html";
 import { apply } from "apply";
 
 const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
     "/": index,
+    "/filesystem/Users/Admin/Pictures/Wallpapers/galaxy.jpg": Response.redirect("https://images.unsplash.com/photo-1741282198587-65bf77e6075d?q=80&w=1091&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
 
     "/prompt.txt": async () => new Response(await genViewerPrompt(), {
       headers: {

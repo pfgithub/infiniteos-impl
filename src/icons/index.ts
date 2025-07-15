@@ -1,0 +1,16 @@
+export { default as AppearanceIcon } from './AppearanceIcon';
+export { default as BrowserIcon } from './BrowserIcon';
+export { default as CloseIcon } from './CloseIcon';
+export { default as FileExplorerIcon } from './FileExplorerIcon';
+export { default as GamesIcon } from './GamesIcon';
+export { default as InfoIcon } from './InfoIcon';
+export { default as MaximizeIcon } from './MaximizeIcon';
+export { default as MinimizeIcon } from './MinimizeIcon';
+export { default as NetworkIcon } from './NetworkIcon';
+export { default as RecycleBinIcon } from './RecycleBinIcon';
+export { default as SettingsIcon } from './SettingsIcon';
+export { default as StartIcon } from './StartIcon';
+export { default as SystemIcon } from './SystemIcon';
+export { default as UsersIcon } from './UsersIcon';
+export { default as VolumeIcon } from './VolumeIcon';
+export { default as WifiIcon } from './WifiIcon';
