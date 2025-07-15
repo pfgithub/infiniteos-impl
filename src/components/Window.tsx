@@ -137,7 +137,7 @@ function Window({ window: w }: WindowProps) {
   return (
     <div
       id={`window_${w.id}`}
-      className={`${windowClasses} ${visibilityClass}`}
+      className={`${windowClasses} ${visibilityClass} top-0 left-0`}
       style={{ ...style, zIndex: w.zIndex }}
       onMouseDown={handleFocus}
     >
