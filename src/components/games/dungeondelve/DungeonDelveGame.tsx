@@ -39,11 +39,22 @@ const DungeonDelveGame: React.FC<DungeonDelveGameProps> = ({ character: initialC
   });
   const [scene, setScene] = useState<Scene | null>(null);
   const storyHistory = useRef<string[]>([]);
+  const [historyForDisplay, setHistoryForDisplay] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const historyContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (historyContainerRef.current) {
+      historyContainerRef.current.scrollTo({
+        top: historyContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [historyForDisplay]);
 
   const generatePrompt = (action?: string): string => {
-    const history = storyHistory.current.slice(-2).join('\n\n'); // Keep last 2 descriptions for context
+    const history = storyHistory.current.join('\n\n');
 
     const prompt = `
 You are the Dungeon Master for a text-based RPG called "Dungeon Delve".
@@ -52,7 +63,8 @@ Name: ${character.name}
 Class: ${character.characterClass}
 HP: ${character.hp}/${character.maxHp}
 
-${history ? `Recent Events:\n${history}` : 'The adventure is just beginning.'}
+Game History:
+${history ? `${history}` : 'The adventure is just beginning.'}
 
 ${action ? `Player's Action: "${action}"` : 'Generate the opening scene for the adventure.'}
 
@@ -86,14 +98,17 @@ Generate the JSON response for the player's current situation.
   const fetchNextScene = async (action?: string) => {
     setIsLoading(true);
     setError(null);
-    if(action) {
-        storyHistory.current.push(`I chose to: ${action}`);
-    }
+
     const prompt = generatePrompt(action);
+
+    if (action) {
+      storyHistory.current.push(`> ${action}`);
+      setHistoryForDisplay([...storyHistory.current]);
+    }
 
     try {
       const response = await fetch(`/api/llm?prompt=${encodeURIComponent(prompt)}`);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -117,7 +132,8 @@ Generate the JSON response for the player's current situation.
 
       setScene(newSceneData);
       storyHistory.current.push(newSceneData.description);
-      
+      setHistoryForDisplay([...storyHistory.current]);
+
       if (newSceneData.character_update && typeof newSceneData.character_update.hp_change === 'number') {
         setCharacter(prev => ({
           ...prev,
@@ -129,6 +145,10 @@ Generate the JSON response for the player's current situation.
       console.error('Failed to fetch from LLM or parse response:', err);
       const errorMessage = err instanceof Error ? err.message : String(err);
       setError(`The spirits are confused. The Dungeon Master is unable to respond. Please try again. (${errorMessage})`);
+      if (action) {
+        storyHistory.current.pop();
+        setHistoryForDisplay([...storyHistory.current]);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -143,13 +163,13 @@ Generate the JSON response for the player's current situation.
     if (isLoading) return;
     fetchNextScene(choice.text);
   };
-  
+
   const HPBar = () => (
     <div className="w-full bg-red-900/50 rounded-full h-4 border border-red-500/50">
-        <div 
-            className="bg-red-500 h-full rounded-full transition-all duration-500" 
-            style={{ width: `${(character.hp / character.maxHp) * 100}%` }}
-        ></div>
+      <div
+        className="bg-red-500 h-full rounded-full transition-all duration-500"
+        style={{ width: `${(character.hp / character.maxHp) * 100}%` }}
+      ></div>
     </div>
   );
 
@@ -161,7 +181,7 @@ Generate the JSON response for the player's current situation.
           <div className="flex items-center gap-4 mt-2">
             <span className="font-bold text-lg">HP: {character.hp} / {character.maxHp}</span>
             <div className="w-48">
-                <HPBar />
+              <HPBar />
             </div>
           </div>
         </div>
@@ -173,18 +193,24 @@ Generate the JSON response for the player's current situation.
         </button>
       </div>
 
-      <div className="flex-grow overflow-y-auto pr-2">
+      <div className="flex-grow overflow-y-auto pr-2" ref={historyContainerRef}>
+        <div className="mb-6 space-y-4">
+          {historyForDisplay.map((text, index) => (
+            <p key={index} className={`leading-relaxed whitespace-pre-wrap ${text.startsWith('>') ? 'text-yellow-300 italic' : 'text-lg'}`}>
+              {text}
+            </p>
+          ))}
+        </div>
+
         {isLoading && <Loader />}
         {error && <div className="text-red-400 bg-red-900/50 p-4 rounded-md">{error}</div>}
+
         {!isLoading && scene && (
           <div>
-            <div className="mb-6">
-              <p className="text-lg leading-relaxed whitespace-pre-wrap">{scene.description}</p>
-            </div>
             <div className="p-3 bg-black/30 border border-purple-400/30 rounded-md mb-6 italic">
               <p className="text-purple-300 text-sm">A vision flashes in your mind: {scene.image_prompt}</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {scene.choices.map((choice, index) => (
                 <button
