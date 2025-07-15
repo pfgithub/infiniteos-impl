@@ -1,4 +1,3 @@
-```typescript
 import React from 'react';
 import { todoImplement } from '../../../todo';
 
