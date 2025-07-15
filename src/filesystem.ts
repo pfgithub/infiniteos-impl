@@ -182,7 +182,10 @@ export async function readFile(path: string): Promise<any> {
     const store = tx.objectStore(STORE_NAME);
     const req = store.get(path);
     return new Promise((resolve, reject) => {
-        req.onsuccess = () => resolve(req.result?.data);
+        req.onsuccess = () => {
+            if (!req.result) return reject(new Error("File not found"));
+            resolve(req.result?.data);
+        };
         req.onerror = () => reject(req.error);
     });
 }
