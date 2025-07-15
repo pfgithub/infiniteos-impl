@@ -1,58 +1,405 @@
+
 import React from 'react';
+
 import SettingsContent from './components/settings/SettingsContent';
-import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon } from './icons';
+
+import { SettingsIcon, BrowserIcon, FileExplorerIcon, GamesIcon, RecycleBinIcon, AppearanceIcon, InfoIcon, NetworkIcon, SystemIcon, UsersIcon, VolumeIcon } from './icons';
+
 import GamesContent from './components/GamesContent';
+
 import DungeonDelveMainMenu from './components/games/dungeondelve/DungeonDelveMainMenu';
+
 import BrowserContent from './components/BrowserContent';
+
 import CyberRunnerMainMenu from './components/games/cyberrunner/CyberRunnerMainMenu';
 
+
+
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
+
     <div className="flex-grow p-4 flex items-center justify-center text-center">
+
       <p>The <strong>{appName}</strong> application is not yet implemented.<br/> This is a placeholder window.</p>
+
     </div>
+
 );
+
   
+
 export const WINDOW_DEFS = {
+
     SETTINGS: {
+
       id: 'settings',
+
       title: 'Settings',
+
       icon: <SettingsIcon className="h-6 w-6" />,
+
       component: SettingsContent,
+
     },
+
     BROWSER: {
+
       id: 'browser',
+
       title: 'Browser',
+
       icon: <BrowserIcon className="h-6 w-6" />,
+
       component: BrowserContent,
+
     },
+
     FILE_EXPLORER: {
+
       id: 'file_explorer',
+
       title: 'File Explorer',
+
       icon: <FileExplorerIcon className="h-6 w-6" />,
+
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="File Explorer" />,
+
     },
+
     GAMES: {
+
       id: 'my_games',
+
       title: 'My Games',
+
       icon: <GamesIcon className="h-6 w-6" />,
+
       component: GamesContent,
+
     },
+
     RECYCLE_BIN: {
+
       id: 'recycle_bin',
+
       title: 'Recycle Bin',
+
       icon: <RecycleBinIcon className="h-6 w-6" />,
+
       component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Recycle Bin" />,
+
     },
+
     DUNGEON_DELVE: {
+
       id: 'dungeondelve_game',
+
       title: 'Dungeon Delve',
+
       icon: <GamesIcon className="h-6 w-6" />,
+
       component: DungeonDelveMainMenu,
+
     },
+
     CYBER_RUNNER: {
+
       id: 'cyberrunner_game',
+
       title: 'CyberRunner 2077',
+
       icon: <GamesIcon className="h-6 w-6" />,
+
       component: CyberRunnerMainMenu,
+
     },
+
+    TEXT_EDITOR: {
+
+      id: 'text_editor',
+
+      title: 'Text Editor',
+
+      icon: <FileExplorerIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Text Editor" />,
+
+    },
+
+    MUSIC_PLAYER: {
+
+      id: 'music_player',
+
+      title: 'Music Player',
+
+      icon: <VolumeIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Music Player" />,
+
+    },
+
+    IMAGE_VIEWER: {
+
+      id: 'image_viewer',
+
+      title: 'Image Viewer',
+
+      icon: <AppearanceIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Image Viewer" />,
+
+    },
+
+    FEEDBACK: {
+
+      id: 'feedback',
+
+      title: 'Feedback',
+
+      icon: <InfoIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Feedback" />,
+
+    },
+
+    CALCULATOR: {
+
+      id: 'calculator',
+
+      title: 'Calculator',
+
+      icon: <SystemIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Calculator" />,
+
+    },
+
+    TERMINAL: {
+
+      id: 'terminal',
+
+      title: 'Terminal',
+
+      icon: <SystemIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Terminal" />,
+
+    },
+
+    EMAIL_CLIENT: {
+
+      id: 'email_client',
+
+      title: 'Email Client',
+
+      icon: <NetworkIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Email Client" />,
+
+    },
+
+    CALENDAR: {
+
+      id: 'calendar',
+
+      title: 'Calendar',
+
+      icon: <SystemIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Calendar" />,
+
+    },
+
+    MAPS: {
+
+      id: 'maps',
+
+      title: 'Maps',
+
+      icon: <BrowserIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Maps" />,
+
+    },
+
+    WEATHER: {
+
+      id: 'weather',
+
+      title: 'Weather',
+
+      icon: <BrowserIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Weather" />,
+
+    },
+
+    PHOTOS: {
+
+      id: 'photos',
+
+      title: 'Photos',
+
+      icon: <AppearanceIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Photos" />,
+
+    },
+
+    VIDEO_PLAYER: {
+
+      id: 'video_player',
+
+      title: 'Video Player',
+
+      icon: <SystemIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Video Player" />,
+
+    },
+
+    SPREADSHEET: {
+
+      id: 'spreadsheet',
+
+      title: 'Spreadsheet',
+
+      icon: <FileExplorerIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Spreadsheet" />,
+
+    },
+
+    PRESENTATION: {
+
+      id: 'presentation',
+
+      title: 'Presentation',
+
+      icon: <FileExplorerIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Presentation" />,
+
+    },
+
+    WORD_PROCESSOR: {
+
+      id: 'word_processor',
+
+      title: 'Word Processor',
+
+      icon: <FileExplorerIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Word Processor" />,
+
+    },
+
+    CODE_EDITOR: {
+
+      id: 'code_editor',
+
+      title: 'Code Editor',
+
+      icon: <SystemIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Code Editor" />,
+
+    },
+
+    NOTES: {
+
+      id: 'notes',
+
+      title: 'Notes',
+
+      icon: <FileExplorerIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Notes" />,
+
+    },
+
+    CONTACTS: {
+
+      id: 'contacts',
+
+      title: 'Contacts',
+
+      icon: <UsersIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Contacts" />,
+
+    },
+
+    CLOCK: {
+
+      id: 'clock',
+
+      title: 'Clock',
+
+      icon: <SystemIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Clock" />,
+
+    },
+
+    ANTIVIRUS: {
+
+      id: 'antivirus',
+
+      title: 'Antivirus',
+
+      icon: <SystemIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Antivirus" />,
+
+    },
+
+    PDF_READER: {
+
+      id: 'pdf_reader',
+
+      title: 'PDF Reader',
+
+      icon: <FileExplorerIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="PDF Reader" />,
+
+    },
+
+    CLOUD_STORAGE: {
+
+      id: 'cloud_storage',
+
+      title: 'Cloud Storage',
+
+      icon: <BrowserIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Cloud Storage" />,
+
+    },
+
+    VPN: {
+
+      id: 'vpn',
+
+      title: 'VPN',
+
+      icon: <NetworkIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="VPN" />,
+
+    },
+
+    SPACE_ADVENTURES: {
+
+      id: 'space_adventures',
+
+      title: 'Space Adventures',
+
+      icon: <GamesIcon className="h-6 w-6" />,
+
+      component: (props: {id: string}) => <PlaceholderWindowContent {...props} appName="Space Adventures" />,
+
+    },
+
 };
+
