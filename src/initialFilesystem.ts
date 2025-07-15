@@ -73,6 +73,14 @@ export const initialFilesystem = {
     "/Games/IslandEscape/main_menu_bg.jpg": {
         "url": "https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
+    "/Games/IslandEscape/locations/": {},
+    "/Games/IslandEscape/locations/beach.jpg": { "url": "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1470" },
+    "/Games/IslandEscape/locations/jungle.jpg": { "url": "https://images.unsplash.com/photo-1504994236843-15a4d1a3c68a?q=80&w=1470" },
+    "/Games/IslandEscape/locations/cliff.jpg": { "url": "https://images.unsplash.com/photo-1606824987103-6a053def52a7?q=80&w=1470" },
+    "/Games/IslandEscape/locations/cave_blocked.jpg": { "url": "https://images.unsplash.com/photo-1563456343516-8a0a38b16029?q=80&w=1470" },
+    "/Games/IslandEscape/locations/cave_open.jpg": { "url": "https://images.unsplash.com/photo-1550993348-1323315a3c63?q=80&w=1470" },
+    "/Games/IslandEscape/locations/cave_inside.jpg": { "url": "https://images.unsplash.com/photo-1619426315570-4371981443d5?q=80&w=1470" },
+    "/Games/IslandEscape/locations/win.jpg": { "url": "https://images.unsplash.com/photo-1509343256512-d77a5cb3791b?q=80&w=1470" },
     "/Games/MechWarriors/": {},
     "/Games/CitySkylines/": {},
     "/System/": {},
