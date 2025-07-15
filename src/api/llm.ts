@@ -15,7 +15,7 @@ export async function llmRoute(req: Request): Promise<Response> {
 
     const url = new URL(req.url);
     // Use the streaming endpoint for the Gemini API
-    const geminiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse", {
+    const geminiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:streamGenerateContent?alt=sse", {
       method: "POST",
       headers: {
         'Content-Type': "application/json",
