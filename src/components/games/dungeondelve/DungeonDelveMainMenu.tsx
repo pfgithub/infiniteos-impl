@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import useWindowStore from '../../../store/windowStore';
 import { todoImplement } from '../../../todo';
 import { readFile } from '../../../filesystem';
+import CharacterCreation from './CharacterCreation';
 
 interface DungeonDelveMainMenuProps {
   id: string; // window id
 }
+
+type Screen = 'main_menu' | 'character_creation';
 
 const MainMenuButton = ({ children, onClick, id }: { children: React.ReactNode, onClick: () => void, id: string }) => (
   <button
@@ -20,6 +23,7 @@ const MainMenuButton = ({ children, onClick, id }: { children: React.ReactNode, 
 const DungeonDelveMainMenu: React.FC<DungeonDelveMainMenuProps> = ({ id }) => {
   const { closeWindow } = useWindowStore();
   const [backgroundUrl, setBackgroundUrl] = useState('');
+  const [screen, setScreen] = useState<Screen>('main_menu');
 
   useEffect(() => {
     const loadBg = async () => {
@@ -40,32 +44,44 @@ const DungeonDelveMainMenu: React.FC<DungeonDelveMainMenuProps> = ({ id }) => {
     closeWindow(id);
   };
 
+  const renderContent = () => {
+    switch (screen) {
+      case 'character_creation':
+        return <CharacterCreation onBack={() => setScreen('main_menu')} />;
+      case 'main_menu':
+      default:
+        return (
+          <div className="bg-black/60 backdrop-blur-sm p-8 rounded-lg shadow-2xl flex flex-col items-center">
+            <h1 className="text-6xl font-extrabold text-red-500 mb-2 font-['MedievalSharp']" style={{ textShadow: '2px 2px 4px #000' }}>
+              Dungeon Delve
+            </h1>
+            <p className="text-yellow-300 mb-10 text-lg">A Classic Fantasy RPG</p>
+            
+            <div className="flex flex-col gap-4">
+              <MainMenuButton id="dungeondelve_new_game" onClick={() => setScreen('character_creation')}>
+                New Game
+              </MainMenuButton>
+              <MainMenuButton id="dungeondelve_load_game" onClick={() => todoImplement('Implement "Load Game" for Dungeon Delve. This should show a list of saved games.')}>
+                Load Game
+              </MainMenuButton>
+              <MainMenuButton id="dungeondelve_options" onClick={() => todoImplement('Implement "Options" for Dungeon Delve. This should show settings for audio, graphics, and controls.')}>
+                Options
+              </MainMenuButton>
+              <MainMenuButton id="dungeondelve_quit" onClick={handleQuit}>
+                Quit
+              </MainMenuButton>
+            </div>
+          </div>
+        );
+    }
+  };
+
   return (
     <div 
       className="flex-grow flex flex-col items-center justify-center text-white bg-cover bg-center bg-black"
       style={{ backgroundImage: backgroundUrl ? `url('${backgroundUrl}')` : 'none' }}
     >
-      <div className="bg-black/60 backdrop-blur-sm p-8 rounded-lg shadow-2xl flex flex-col items-center">
-        <h1 className="text-6xl font-extrabold text-red-500 mb-2 font-['MedievalSharp']" style={{ textShadow: '2px 2px 4px #000' }}>
-          Dungeon Delve
-        </h1>
-        <p className="text-yellow-300 mb-10 text-lg">A Classic Fantasy RPG</p>
-        
-        <div className="flex flex-col gap-4">
-          <MainMenuButton id="dungeondelve_new_game" onClick={() => todoImplement('Implement "New Game" for Dungeon Delve. This should lead to character creation.')}>
-            New Game
-          </MainMenuButton>
-          <MainMenuButton id="dungeondelve_load_game" onClick={() => todoImplement('Implement "Load Game" for Dungeon Delve. This should show a list of saved games.')}>
-            Load Game
-          </MainMenuButton>
-          <MainMenuButton id="dungeondelve_options" onClick={() => todoImplement('Implement "Options" for Dungeon Delve. This should show settings for audio, graphics, and controls.')}>
-            Options
-          </MainMenuButton>
-          <MainMenuButton id="dungeondelve_quit" onClick={handleQuit}>
-            Quit
-          </MainMenuButton>
-        </div>
-      </div>
+      {renderContent()}
     </div>
   );
 };
