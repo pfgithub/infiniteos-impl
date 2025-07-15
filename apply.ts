@@ -14,7 +14,7 @@ interface FileOperation {
 
 function parseOutput(output: string): FileOperation[] {
 	const operations: FileOperation[] = [];
-    output = output.replaceAll("\r", "\n");
+    output = output.replaceAll("\r", "");
 
 	const regex =
 		/<(create-file|update-file|delete-file) path="([^"]+)"(?:\s*\/>|>([\s\S]*?)<\/\1>)/g;
