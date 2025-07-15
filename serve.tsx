@@ -4,6 +4,7 @@ import { genViewerPrompt } from "prompt";
 import prompt from "./prompt/prompt.html";
 import { apply } from "apply";
 import { llmRoute } from "@/api/llm";
+import { infiniteSiteFetch } from "infinite_site";
 
 // A lock to ensure only one LLM request is processed at a time.
 
@@ -32,7 +33,12 @@ const server = serve({
       }
       return new Response("ok", {headers: {'Content-Type': "text/plain; charset=utf-8"}});
     }},
-    "/api/llm": llmRoute,
+    "/infinite-site/*": req => {
+      const result = new URL(req.url);
+      result.pathname = result.pathname.replace("/infinite-site", "");
+      result.port = "8388";
+      return Response.redirect(result);
+    },
   },
 
   development: process.env.NODE_ENV !== "production" && {
@@ -45,4 +51,12 @@ const server = serve({
   port: 8389,
 });
 
-console.log(`🚀 Server running at ${server.url}`);
+const iserve = serve({
+  routes: {
+    "/*": infiniteSiteFetch,
+    "/tailwind.js": new Response(Bun.file("node_modules/@tailwindcss/browser/dist/index.global.js")),
+  },
+  port: 8388,
+})
+
+console.log(`🚀 Server running at ${server.url} / ${iserve.url}`);
