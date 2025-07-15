@@ -10,6 +10,7 @@ import ClockContent from './components/ClockContent';
 import FileExplorerContent from './components/FileExplorerContent';
 import { todoImplement } from './todo';
 import RecycleBinContent from './components/RecycleBinContent';
+import IslandEscapeMainMenu from './components/games/islandescape/IslandEscapeMainMenu';
 
 const PlaceholderWindowContent: React.FC<{ id: string; appName: string }> = ({ appName }) => (
     <div className="flex-grow p-4 flex flex-col items-center justify-center text-center gap-4">
@@ -68,6 +69,12 @@ export const WINDOW_DEFS = {
       title: 'CyberRunner 2077',
       icon: <GamesIcon className="h-6 w-6" />,
       component: CyberRunnerMainMenu,
+    },
+    ISLAND_ESCAPE: {
+      id: 'islandescape_game',
+      title: 'Island Escape',
+      icon: <GamesIcon className="h-6 w-6" />,
+      component: IslandEscapeMainMenu,
     },
     TEXT_EDITOR: {
       id: 'text_editor',

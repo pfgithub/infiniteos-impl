@@ -70,6 +70,7 @@ const initialFilesystem = {
         "contents": "desktop_background=/Users/Admin/Pictures/Wallpapers/galaxy.jpg"
     },
     "/Games/": {},
+    "/Games/Starfall/": {},
     "/Games/CyberRunner/": {},
     "/Games/CyberRunner/main_menu_bg.jpg": {
         "url": "https://images.unsplash.com/photo-1618962059365-c323d8c2d96c?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -78,6 +79,12 @@ const initialFilesystem = {
     "/Games/DungeonDelve/main_menu_bg.jpg": {
         "url": "https://images.unsplash.com/photo-1531383956816-1a2c5a7238c3?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
+    "/Games/IslandEscape/": {},
+    "/Games/IslandEscape/main_menu_bg.jpg": {
+        "url": "https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    },
+    "/Games/MechWarriors/": {},
+    "/Games/CitySkylines/": {},
     "/System/": {},
     "/System/SystemInfo.txt": {},
     "/System/config/": {},

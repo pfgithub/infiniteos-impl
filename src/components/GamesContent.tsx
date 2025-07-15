@@ -60,6 +60,8 @@ const GameCard = ({ game, status, onInstall }: { game: Game, status: GameStatus,
       openWindow(WINDOW_DEFS.DUNGEON_DELVE);
     } else if (game.id === 'cyberrunner') {
       openWindow(WINDOW_DEFS.CYBER_RUNNER);
+    } else if (game.id === 'islandescape') {
+      openWindow(WINDOW_DEFS.ISLAND_ESCAPE);
     } else {
       todoImplement(`The 'Play' button for "${game.title}" was clicked. Implement launching the game.`);
     }
